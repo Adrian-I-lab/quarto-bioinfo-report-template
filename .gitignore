@@ -1,6 +1,6 @@
 # Rendered output and caches
 _book/
-.quarto/
+/.quarto/
 _freeze/
 **/*.quarto_ipynb
 *_files/
