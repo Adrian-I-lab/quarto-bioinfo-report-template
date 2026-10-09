@@ -1,3 +1,86 @@
+---
+jupyter: python3
+---
+
 # Python engine {#sec-g-python}
 
-Placeholder. A later build step replaces this page.
+```{python}
+#| include: false
+import sys
+from pathlib import Path
+
+
+def book_root():
+    """Walk up from the chapter's folder to the folder holding _quarto.yml."""
+    here = Path.cwd()
+    for folder in (here, *here.parents):
+        if (folder / "_quarto.yml").exists():
+            return folder
+    raise RuntimeError("No _quarto.yml found. Set REPORT_ROOT to the book folder.")
+
+
+sys.path.insert(0, str(book_root()))
+import _setup as s  # noqa: E402
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
+from IPython.display import Markdown, display  # noqa: E402
+
+counts = s.synth_counts(n_per_group=4)["counts"]
+kept = counts.mean(axis=1).to_numpy() >= s.report_param("min_count")
+de = s.synth_de(n_per_group=4)[kept].reset_index(drop=True)
+de["FDR"] = s.bh_adjust(de["p"].to_numpy())
+fdr = s.report_param("fdr")
+lfc = s.report_param("lfc_threshold")
+up = (de["FDR"] < fdr) & (de["log2FC"] >= lfc)
+down = (de["FDR"] < fdr) & (de["log2FC"] <= -lfc)
+```
+
+This chapter shows the house conventions in Python, with the Jupyter engine. It mirrors the R chapters: the same anatomy, the same palette, and numbers computed, never typed. A book may mix engines across chapters. Each chapter uses one engine, set in its front matter with `jupyter: python3`.
+
+The first cell is hidden. It finds the book root by walking up from the chapter's folder, then imports `_setup.py`, which offers the same helpers as `_setup.R`.
+
+## A figure {#sec-g-python-figure}
+
+```{python}
+#| label: fig-g-python-volcano
+#| fig-cap: "Log2 fold change against minus log10 p-value for each tested synthetic feature, drawn with matplotlib. Marker shape and colour both show the call."
+#| fig-alt: "A volcano plot. Most points are grey circles near the bottom centre. A few triangles sit higher up on each side, beyond the dashed lines."
+fig, ax = plt.subplots(figsize=(6, 4))
+groups = [
+    ("did not pass", ~(up | down), "o", s.HOUSE_PAL["ns"]),
+    ("rose", up, "^", s.HOUSE_PAL["up"]),
+    ("fell", down, "v", s.HOUSE_PAL["down"]),
+]
+for name, mask, marker, colour in groups:
+    ax.scatter(de.loc[mask, "log2FC"], -np.log10(de.loc[mask, "p"]),
+               marker=marker, color=colour, alpha=0.8, s=14, label=name)
+for x in (-lfc, lfc):
+    ax.axvline(x, linestyle="--", color="#5a6b76", linewidth=0.8)
+ax.set_xlabel("log2 fold change (treated / control)")
+ax.set_ylabel("-log10 p")
+ax.legend(frameon=False)
+plt.show()
+```
+
+## A table {#sec-g-python-table}
+
+```{python}
+#| label: tbl-g-python-counts
+#| tbl-cap: "Features passing both thresholds, by direction, out of the features tested, computed with pandas."
+n = len(de)
+rows = [("Rose", int(up.sum())), ("Fell", int(down.sum())), ("Did not pass", n - int(up.sum()) - int(down.sum()))]
+table = "| Direction | Features |\n|---|---|\n" + "\n".join(
+    f"| {name} | {s.frac(k, n)} |" for name, k in rows
+)
+display(Markdown(table))
+```
+
+`DataFrame.to_markdown()` needs an extra package, so the table is built as a pipe table by hand and shown with `Markdown()`.
+
+## An inline number {#sec-g-python-inline}
+
+Of `{python} s.fmt(n)` features tested, `{python} s.frac(int(up.sum()) + int(down.sum()), n)` passed both thresholds. Both numbers come from inline Python expressions.
+
+## Mixing engines {#sec-g-python-mixing}
+
+Mixing engines across chapters is allowed. Mixing them inside one chapter is not, because each chapter runs in one session of one engine. Keep shared helpers in step: when you add a helper to `_setup.R`, add its twin to `_setup.py`.

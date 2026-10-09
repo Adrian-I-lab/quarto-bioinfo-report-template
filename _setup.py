@@ -283,7 +283,7 @@ def _welch_p(x: np.ndarray, y: np.ndarray) -> float:
     return _betainc(df / 2, 0.5, df / (df + t * t))
 
 
-def _bh(p: np.ndarray) -> np.ndarray:
+def bh_adjust(p: np.ndarray) -> np.ndarray:
     """Benjamini-Hochberg adjusted p-values."""
     n = len(p)
     order = np.argsort(p)[::-1]
@@ -313,7 +313,7 @@ def synth_de(seed: int = SEED, n_per_group: int = 3) -> pd.DataFrame:
             "p": p,
         }
     )
-    out["FDR"] = _bh(p)
+    out["FDR"] = bh_adjust(p)
     return out
 
 
