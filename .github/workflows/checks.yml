@@ -1,0 +1,39 @@
+name: checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@PIN_ME # v4
+      - uses: actions/setup-python@PIN_ME # v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # No installs. The checks use the standard library only. Tests that need
+      # numpy are skipped, and the R tests report SKIPPED-NO-R without failing.
+      - name: Tests and style checks
+        run: bash scripts/check_style.sh
+
+  # A render job is not enabled in v0.1. It would install Quarto and R in CI.
+  # Enabling it is the maintainer's decision. Pin both actions by SHA first.
+  #
+  # render:
+  #   runs-on: ubuntu-24.04
+  #   steps:
+  #     - uses: actions/checkout@PIN_ME # v4
+  #     - uses: quarto-dev/quarto-actions/setup@PIN_ME # v2
+  #       with:
+  #         version: 1.9.37
+  #     - uses: r-lib/actions/setup-r@PIN_ME # v2
+  #     - run: Rscript -e 'install.packages(c("knitr", "rmarkdown", "ggplot2", "yaml", "jsonlite"))'
+  #     - run: quarto render --profile gallery
