@@ -140,8 +140,9 @@ if [ "${#content[@]}" -gt 0 ]; then
 fi
 
 echo
-printf '%-22s %14s %7s %10s %8s\n' "check" "files_examined" "errors" "warnings" "exit"
-printf '%-22s %14s %7s %10s %8s\n' "-----" "--------------" "------" "--------" "----"
+# "examined" is files for a check, tests for a test suite.
+printf '%-22s %14s %7s %10s %8s\n' "check" "examined" "errors" "warnings" "exit"
+printf '%-22s %14s %7s %10s %8s\n' "-----" "--------" "------" "--------" "----"
 for row in "${rows[@]}"; do
   IFS='|' read -r n e r w c <<<"$row"
   printf '%-22s %14s %7s %10s %8s\n' "$n" "$e" "$r" "$w" "$c"

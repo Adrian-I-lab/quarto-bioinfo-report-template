@@ -102,6 +102,9 @@ class TestNewBook(unittest.TestCase):
         proc = self.run_script(*self.base_args(), "--chapters", "A;B", "--drop-gallery", "--dry-run")
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertIn("would remove gallery", proc.stdout)
+        self.assertIn("would remove scripts/skeleton.sha256", proc.stdout)
+        self.assertIn("check link: chapters/90-interpretation.qmd", proc.stdout)
+        self.assertIn("warning: no chapter covers the detection floor", proc.stdout)
         after = snapshot(self.copy)
         changed = [k for k in set(before) | set(after) if before.get(k) != after.get(k)]
         self.assertEqual(changed, [])

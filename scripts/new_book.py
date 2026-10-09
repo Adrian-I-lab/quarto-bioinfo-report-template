@@ -149,6 +149,7 @@ def plan(args, root: Path) -> tuple[dict[Path, str], list[Path]]:
     """Return (files to write, paths to remove)."""
     writes: dict[Path, str] = {}
     removes: list[Path] = []
+    notes: list[str] = []
 
     quarto = root / "_quarto.yml"
     text = quarto.read_text(encoding="utf-8")
@@ -196,6 +197,10 @@ def plan(args, root: Path) -> tuple[dict[Path, str], list[Path]]:
             if not path.exists():
                 continue
             ref_text = path.read_text(encoding="utf-8")
+            for n, line in enumerate(ref_text.splitlines(), start=1):
+                for label in re.findall(r"@(sec-[\w-]+)", line):
+                    if label in removed_labels:
+                        notes.append(f"check link: {rel}:{n}: @{label} now points at @sec-{slugs[0]}")
             new_text = re.sub(
                 r"@(sec-[\w-]+)",
                 lambda m: f"@sec-{slugs[0]}" if m.group(1) in removed_labels else m.group(0),
@@ -203,6 +208,11 @@ def plan(args, root: Path) -> tuple[dict[Path, str], list[Path]]:
             )
             if new_text != ref_text:
                 writes[path] = new_text
+        if not any(re.search(r"floor|detect", n, re.IGNORECASE) for n in names):
+            notes.append("warning: no chapter covers the detection floor. The house style puts one "
+                         "before any result (STYLE-GUIDE.md section 2).")
+        notes.append("note: the new chapter list is flat. Add part headings in "
+                     "_quarto-starter.yml if you want them.")
     elif args.engine == "python":
         raise SystemExit("new_book: --engine python applies to new chapters, so use it with --chapters")
 
@@ -216,7 +226,9 @@ def plan(args, root: Path) -> tuple[dict[Path, str], list[Path]]:
             new = re.sub(r"<!-- gallery:begin -->.*?<!-- gallery:end -->\n?", "", rtext, flags=re.DOTALL)
             if new != rtext:
                 writes[readme] = new
-    return writes, removes
+    if (root / MANIFEST).exists():
+        removes.append(root / MANIFEST)
+    return writes, removes, notes
 
 
 def main(argv=None) -> int:
@@ -233,12 +245,16 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     root = Path(args.root).resolve()
-    writes, removes = plan(args, root)
+    writes, removes, notes = plan(args, root)
     prefix = "would " if args.dry_run else ""
+    # Removing the manifest makes the book the user's own: a later run treats
+    # every existing chapter as the user's work and needs --force.
     for path in removes:
         print(f"{prefix}remove {path.relative_to(root).as_posix()}")
     for path in writes:
         print(f"{prefix}write  {path.relative_to(root).as_posix()}")
+    for note in notes:
+        print(note)
     if args.dry_run:
         return 0
     for path in removes:
@@ -249,12 +265,6 @@ def main(argv=None) -> int:
     for path, text in writes.items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
-    # The book is now the user's own. Without the manifest, a later run treats
-    # every existing chapter as the user's work and needs --force.
-    manifest = root / MANIFEST
-    if manifest.exists():
-        manifest.unlink()
-        print(f"remove {MANIFEST}")
     print("new_book: done. Next: quarto render, then bash scripts/check_style.sh")
     return 0
 
