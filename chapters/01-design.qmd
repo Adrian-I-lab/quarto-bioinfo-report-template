@@ -1,0 +1,3 @@
+# Design {#sec-design}
+
+Placeholder. A later build step replaces this page.

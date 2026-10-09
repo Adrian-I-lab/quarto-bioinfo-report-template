@@ -1,0 +1,3 @@
+# Detection floor {#sec-detection-floor}
+
+Placeholder. A later build step replaces this page.

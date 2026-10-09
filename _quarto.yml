@@ -1,0 +1,83 @@
+# Book configuration for an analysis report in the house style.
+#
+# Chapter order is an argument, not a filing system:
+#   1. the data and the instrument (what was measured, and how well),
+#   2. what this design could detect (the detection floor),
+#   3. results,
+#   4. robustness,
+#   5. interpretation (the only chapter allowed to interpret),
+#   6. reference (methods, provenance, limitations, glossary).
+# The detection floor comes before any result, because a result read
+# without its detection floor is a result read without its denominator.
+#
+# Profiles:
+#   quarto render                          the starter book (_quarto-starter.yml)
+#   quarto render --profile draft          the starter book with draft questions shown
+#   quarto render --profile gallery        the gallery (_quarto-gallery.yml)
+#   quarto render --profile gallery,draft  the gallery with draft questions shown
+# Quarto appends a profile's chapter list to any list in this file, so this
+# file holds no chapters. The starter and gallery profiles form a group, and
+# the first profile in a group (starter) is active when none is named.
+
+profile:
+  group:
+    - [starter, gallery]
+
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Analysis report"
+  subtitle: "One line on what this book decides"
+  author: "Your Name"
+  date: today
+  date-format: "YYYY-MM-DD"
+  search: true
+  page-navigation: true
+  # The chapter list lives in a profile, see the comment at the top.
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: [cosmo, theme/house.scss]
+    title-block-banner: "#22414d"
+    title-block-banner-color: "#ffffff"
+    toc: true
+    toc-depth: 3
+    toc-expand: 2
+    number-sections: true
+    number-depth: 2
+    code-fold: true
+    code-summary: "Show code"
+    code-tools: true
+    code-link: true
+    df-print: paged
+    fig-align: center
+    fig-responsive: true
+    lightbox: true
+    smooth-scroll: true
+    anchor-sections: true
+    link-external-icon: true
+    link-external-newwindow: true
+    embed-resources: false
+    grid:
+      sidebar-width: 270px
+      body-width: 1000px
+      margin-width: 240px
+      gutter-width: 1.5rem
+
+execute:
+  freeze: auto
+  warning: false
+  message: false
+
+knitr:
+  opts_chunk:
+    dpi: 150
+    out-width: "100%"
+
+filters:
+  - filters/lazy-images.lua
+  - filters/draft-questions.lua

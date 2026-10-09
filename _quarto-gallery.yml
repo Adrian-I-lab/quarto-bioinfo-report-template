@@ -1,0 +1,25 @@
+# Gallery profile: renders every formatting element on synthetic data.
+# Use with: quarto render --profile gallery
+book:
+  title: "House style gallery"
+  subtitle: "Every element of the house style, on synthetic data"
+  chapters:
+    - index.qmd
+    - part: "Gallery"
+      chapters:
+        - gallery/g01-chapter-anatomy.qmd
+        - gallery/g02-figures.qmd
+        - gallery/g03-tables.qmd
+        - gallery/g04-callouts.qmd
+        - gallery/g05-tabsets-and-layout.qmd
+        - gallery/g06-crossrefs-and-equations.qmd
+        - gallery/g07-provenance.qmd
+        - gallery/g08-draft-markers.qmd
+        - gallery/g09-python-engine.qmd
+        - gallery/g10-interpretation.qmd
+    - part: "Reference"
+      chapters:
+        - reference/methods.qmd
+        - reference/provenance.qmd
+        - reference/limitations.qmd
+        - reference/glossary.qmd

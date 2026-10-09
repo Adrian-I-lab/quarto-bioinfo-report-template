@@ -1,0 +1,3 @@
+# Quality of the measurement {#sec-quality}
+
+Placeholder. A later build step replaces this page.

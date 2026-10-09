@@ -1,0 +1,80 @@
+/*-- scss:defaults --*/
+
+// System fonts only, so the book renders offline with no web-font fetch.
+$font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+$font-family-monospace: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+// Base size and rhythm.
+$font-size-root: 17px;
+$line-height-base: 1.62;
+
+// Text, headings, and the single accent colour.
+$body-color: #21303b;
+$headings-color: #16222b;
+$headings-font-weight: 600;
+$primary: #2c7a93;
+$link-color: #1f6f8b;
+$link-decoration: none;
+$link-hover-decoration: underline;
+
+// Code.
+$code-block-bg: #f6f8fa;
+$code-color: #b5366a;
+
+/*-- scss:rules --*/
+
+// Headings: slightly tighter letter spacing.
+h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+// H2: generous top margin and a hairline rule underneath.
+h2 {
+  margin-top: 2.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #e6ebee;
+}
+
+// Section numbers are muted.
+.header-section-number { color: #8aa0ab; font-weight: 500; }
+
+// Prose limited to about 80 characters; figures, tables, and code stay full width.
+main p, main li { max-width: 80ch; }
+.cell-output p, .callout p, .callout li, table p, figure p { max-width: none; }
+
+// Code blocks: thin border, coloured left accent, rounded corners.
+div.sourceCode, pre.sourceCode {
+  border: 1px solid #e6ebee;
+  border-left: 3px solid #2c7a93;
+  border-radius: 6px;
+}
+
+// Code-fold summary: muted, small, italic.
+details.code-fold > summary {
+  color: #5a6b76;
+  font-size: 0.85em;
+  font-style: italic;
+}
+
+// Tables: tinted header, heavier header rule, zebra rows.
+table { font-size: 0.92em; }
+table thead tr { background-color: #f3f6f7; }
+table thead th { border-bottom: 2px solid #d7dee2; }
+table tbody tr:nth-child(even) { background-color: #fafcfc; }
+
+// Captions: muted, small, italic.
+caption, figcaption, .figure-caption, .table-caption {
+  color: #5a6b76;
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+// Callouts: rounded, thick left border.
+div.callout {
+  border-radius: 8px;
+  border-left-width: 5px;
+}
+
+// Sidebar and table of contents: slightly smaller.
+#quarto-sidebar, #TOC { font-size: 0.9em; }
+
+// Figure images: soft corners.
+figure img, .quarto-figure img { border-radius: 4px; }

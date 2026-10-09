@@ -1,0 +1,30 @@
+# Starter profile: the default book a new user fills in.
+# Active by default (first in the profile group in _quarto.yml).
+# scripts/new_book.py rewrites the lines between the chapters markers.
+book:
+  chapters:
+    # chapters:begin
+    - index.qmd
+    - part: "The data and the instrument"
+      chapters:
+        - chapters/01-design.qmd
+        - chapters/02-quality.qmd
+    - part: "What this design could detect"
+      chapters:
+        - chapters/03-detection-floor.qmd
+    - part: "Results"
+      chapters:
+        - chapters/04-results.qmd
+    - part: "Robustness"
+      chapters:
+        - chapters/05-robustness.qmd
+    # chapters:end
+    - part: "Synthesis"
+      chapters:
+        - chapters/90-interpretation.qmd
+    - part: "Reference"
+      chapters:
+        - reference/methods.qmd
+        - reference/provenance.qmd
+        - reference/limitations.qmd
+        - reference/glossary.qmd

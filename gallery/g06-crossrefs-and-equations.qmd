@@ -1,0 +1,3 @@
+# Cross-references and equations {#sec-g-crossrefs}
+
+Placeholder. A later build step replaces this page.

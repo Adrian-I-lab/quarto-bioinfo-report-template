@@ -1,0 +1,8 @@
+# Draft markers {#sec-g-draft}
+
+Placeholder. A later build step replaces this page.
+
+<!-- Q
+- Does the filter show this question in a draft render?
+- Is it hidden in a normal render?
+-->

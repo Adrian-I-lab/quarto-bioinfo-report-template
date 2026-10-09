@@ -1,0 +1,3 @@
+# Provenance {#sec-provenance}
+
+Placeholder. A later build step replaces this page.

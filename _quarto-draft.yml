@@ -1,0 +1,3 @@
+# Draft profile: shows each section's draft questions as a collapsed callout.
+# Use with: quarto render --profile draft   or   --profile gallery,draft
+draft-questions: true

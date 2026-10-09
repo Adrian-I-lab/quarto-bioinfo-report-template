@@ -1,0 +1,3 @@
+# Callouts {#sec-g-callouts}
+
+Placeholder. A later build step replaces this page.
