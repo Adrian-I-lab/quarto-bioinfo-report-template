@@ -78,8 +78,14 @@ if [ "$code" != "0" ]; then
 fi
 record "python-tests (ran)" "${ran:-0}" "${failed:-0}" "skipped=${skipped:-0}" "$code"
 
-# 2. R unit tests, only where R exists.
-if command -v Rscript >/dev/null 2>&1; then
+# 2. R unit tests, only where R and the setup's packages exist.
+has_r=0
+if command -v Rscript >/dev/null 2>&1 && Rscript -e \
+    'ok <- all(vapply(c("ggplot2", "knitr", "yaml"), requireNamespace, logical(1), quietly = TRUE)); quit(status = if (ok) 0 else 1)' \
+    >/dev/null 2>&1; then
+  has_r=1
+fi
+if [ "$has_r" = "1" ]; then
   code=0
   Rscript tests/test_setup_r.R >"$logdir/r.log" 2>&1 || code=$?
   passed="$(grep -o 'passed: [0-9]*' "$logdir/r.log" | grep -o '[0-9]*' || echo 0)"
@@ -89,7 +95,7 @@ if command -v Rscript >/dev/null 2>&1; then
   fi
   record "r-tests (passed)" "${passed:-0}" "$([ "$code" = 0 ] && echo 0 || echo 1)" "0" "$code"
 else
-  echo "SKIPPED-NO-R: Rscript not found, R unit tests not run."
+  echo "SKIPPED-NO-R: Rscript or its packages (ggplot2, knitr, yaml) not found, R unit tests not run."
   record "r-tests" "SKIPPED-NO-R" "0" "0" "skipped"
 fi
 
