@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Blocks a commit whose added lines or file paths contain a denylist term,
+# a secret, a private IPv4 address, or an absolute home path.
+set -u
+hook_dir="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=scripts/hooks/_scan.sh
+. "$hook_dir/_scan.sh"
+
+check_denylist_env || exit 1
+
+status=0
+
+# Staged file paths.
+paths="$(git diff --cached --name-only --diff-filter=ACMR)"
+if ! printf '%s\n' "$paths" | scan_text "staged file paths"; then
+  status=1
+fi
+
+# Added lines, per file, so a hit names the file.
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  if ! git diff --cached -U0 --no-color -- "$f" \
+      | grep '^+' | grep -v '^+++' | sed 's/^+//' \
+      | scan_text "$f"; then
+    status=1
+  fi
+done <<< "$paths"
+
+if [ "$status" -ne 0 ]; then
+  echo "hook: commit rejected. Fix the content, never the hook." >&2
+fi
+exit "$status"

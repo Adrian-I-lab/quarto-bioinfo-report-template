@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Blocks a commit message that contains a denylist term, a secret, a
+# private IPv4 address, or an absolute home path.
+set -u
+hook_dir="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=scripts/hooks/_scan.sh
+. "$hook_dir/_scan.sh"
+
+check_denylist_env || exit 1
+
+# Ignore git's own comment lines.
+if ! grep -v '^#' "$1" | scan_text "commit message"; then
+  echo "hook: commit message rejected. Reword it." >&2
+  exit 1
+fi
+exit 0

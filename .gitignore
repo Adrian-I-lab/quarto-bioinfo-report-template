@@ -1,0 +1,22 @@
+# Rendered output and caches
+_book/
+.quarto/
+_freeze/
+*_files/
+site_libs/
+figures/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Other
+.DS_Store
+*.log
+/tmp/
