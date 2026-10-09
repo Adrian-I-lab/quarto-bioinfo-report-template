@@ -115,13 +115,13 @@ def prose_lines(path: str | Path) -> list[tuple[int, str]]:
     """Every source line as (line_number, prose_text); non-prose becomes ''."""
     raw = Path(path).read_text(encoding="utf-8").splitlines()
     mask = code_mask(raw)
-    no_code = ["" if m else line for line, m in zip(raw, mask)]
+    # Inline code goes first, so a quoted "<!--" cannot open a comment.
+    no_code = ["" if m else _INLINE_CODE.sub(" ", line) for line, m in zip(raw, mask)]
     stripped = _strip_comments(no_code)
     out = []
     for n, line in enumerate(stripped, start=1):
         if _RAW_HTML_LINE.match(line) or _DIV_FENCE.match(line):
             line = ""
-        line = _INLINE_CODE.sub(" ", line)
         line = _ATTR_BLOCK.sub(" ", line)
         out.append((n, line))
     return out
@@ -168,7 +168,7 @@ def _opt_outs(path: str | Path):
     for n, (line, in_code) in enumerate(zip(raw, mask), start=1):
         if in_code:
             continue
-        for m in _OPT_OUT.finditer(line):
+        for m in _OPT_OUT.finditer(_INLINE_CODE.sub(" ", line)):
             yield n, m.group(1).strip()
 
 
