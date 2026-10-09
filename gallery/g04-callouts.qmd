@@ -1,3 +1,163 @@
 # Callouts {#sec-g-callouts}
 
-Placeholder. A later build step replaces this page.
+Each callout type has one house meaning. A reader who learns the meaning once can skim a book by its callouts. Every example below shows the rendered callout, then its source, then when the house style uses it.
+
+## In plain terms {#sec-g-callouts-plain}
+
+::: {.callout-tip}
+## In plain terms
+The treated samples had more of a small set of features than the control samples.
+:::
+
+````markdown
+::: {.callout-tip}
+## In plain terms
+The treated samples had more of a small set of features than the control samples.
+:::
+````
+
+Use it for the lay summary at the top of every chapter.
+
+## Status {#sec-g-callouts-status}
+
+::: {.callout-note}
+## Status
+Last run on the synthetic example data, 2026-01-15.
+:::
+
+````markdown
+::: {.callout-note}
+## Status
+Last run on the synthetic example data, 2026-01-15.
+:::
+````
+
+Use it for what data a chapter last ran on, and when.
+
+## How to read this {#sec-g-callouts-read}
+
+::: {.callout-note appearance="simple"}
+## How to read this
+Each row is one feature. A pale cell is a small difference from that feature's own mean, not low expression.
+:::
+
+````markdown
+::: {.callout-note appearance="simple"}
+## How to read this
+Each row is one feature. A pale cell is a small difference from that feature's own mean, not low expression.
+:::
+````
+
+Use it before any figure a reader could misread, especially a heatmap.
+
+## A caveat to read first {#sec-g-callouts-caveat}
+
+::: {.callout-important}
+## Which number this chapter uses
+This chapter counts features that pass both thresholds. The FDR threshold alone gives a larger number. The two are not interchangeable.
+:::
+
+````markdown
+::: {.callout-important}
+## Which number this chapter uses
+This chapter counts features that pass both thresholds. The FDR threshold alone gives a larger number. The two are not interchangeable.
+:::
+````
+
+Use it for a caveat that must be read before the numbers.
+
+## A count of zero {#sec-g-callouts-zero}
+
+::: {.callout-warning appearance="simple"}
+## A count of zero is not a measured absence
+A zero means no feature passed at this design's detection floor. It is a failure to detect, not a measurement of nothing.
+:::
+
+````markdown
+::: {.callout-warning appearance="simple"}
+## A count of zero is not a measured absence
+A zero means no feature passed at this design's detection floor. It is a failure to detect, not a measurement of nothing.
+:::
+````
+
+Use it wherever a result can be empty.
+
+## Missing provenance {#sec-g-callouts-manifest}
+
+::: {.callout-caution}
+## No run manifest
+No run manifest was found. When the analysis ran, and whether it ran cleanly, are unknown.
+:::
+
+````markdown
+::: {.callout-caution}
+## No run manifest
+No run manifest was found. When the analysis ran, and whether it ran cleanly, are unknown.
+:::
+````
+
+Use it when provenance is missing.
+
+## A gated section {#sec-g-callouts-na}
+
+::: {.callout-note appearance="simple"}
+## Not applicable to this report
+This section covers a second contrast. It did not run because the design has one contrast. Nothing was computed and nothing is hidden.
+:::
+
+````markdown
+::: {.callout-note appearance="simple"}
+## Not applicable to this report
+This section covers a second contrast. It did not run because the design has one contrast. Nothing was computed and nothing is hidden.
+:::
+````
+
+Use it in place of a section that does not apply. In R, `not_applicable()` writes it for you.
+
+## The interpretation banner {#sec-g-callouts-banner}
+
+::: {.callout-important}
+## This chapter is interpretation, not a result
+It is the author's reading of the measurements. No number in it is new.
+:::
+
+````markdown
+::: {.callout-important}
+## This chapter is interpretation, not a result
+It is the author's reading of the measurements. No number in it is new.
+:::
+````
+
+Use it once, at the top of the synthesis chapter.
+
+## A collapsed callout {#sec-g-callouts-collapsed}
+
+::: {.callout-note collapse="true"}
+## Details of the filter
+Features with a mean count below the threshold were removed before testing.
+:::
+
+````markdown
+::: {.callout-note collapse="true"}
+## Details of the filter
+Features with a mean count below the threshold were removed before testing.
+:::
+````
+
+Use it for detail most readers can skip.
+
+## Summary {#sec-g-callouts-summary}
+
+| Callout type | Title pattern | Meaning |
+|---|---|---|
+| tip | In plain terms | Lay summary at the top of a chapter |
+| note | Status | What data the chapter ran on, and when |
+| note, simple | How to read this | Read before a non-obvious figure |
+| important | A caveat, for example "Which number this chapter uses" | Read before the numbers |
+| warning, simple | A count of zero is not a measured absence | Wherever a result can be empty |
+| caution | No run manifest | Provenance is missing |
+| note, simple | Not applicable to this report | A gated section that did not run |
+| important | This chapter is interpretation, not a result | Banner on the synthesis chapter |
+| note, collapsed | Any short title | Detail most readers can skip |
+
+: Callout types and their house meaning. {#tbl-g-callouts-summary}

@@ -1,3 +1,62 @@
 # Cross-references and equations {#sec-g-crossrefs}
 
-Placeholder. A later build step replaces this page.
+Every figure, table, section, and equation that is referred to gets a label. Quarto numbers them and turns each reference into a link.
+
+## Label prefixes {#sec-g-crossrefs-prefixes}
+
+| Prefix | Used for | Example |
+|---|---|---|
+| `sec-` | Sections and chapters | `sec-quality-depth` |
+| `fig-` | Figures | `fig-quality-depth` |
+| `tbl-` | Tables | `tbl-results-counts` |
+| `eq-` | Equations | `eq-lfc` |
+
+: Label prefixes and what each is for. {#tbl-g-crossrefs-prefixes}
+
+@tbl-g-crossrefs-prefixes lists the prefixes. Section labels follow `sec-<chapter>-<topic>`, so a label says where it lives. Labels are unique across the whole book. The caption check enforces this.
+
+````markdown
+## Depth per sample {#sec-quality-depth}
+
+See @sec-quality-depth and @tbl-results-counts.
+````
+
+## Equations {#sec-g-crossrefs-equations}
+
+The log2 fold change compares the mean of the treated group, $\bar{x}_T$, with the mean of the control group, $\bar{x}_C$:
+
+$$
+\mathrm{LFC} = \log_2 \frac{\bar{x}_T}{\bar{x}_C}
+$$ {#eq-lfc}
+
+The Benjamini-Hochberg adjusted p-value for the feature ranked $i$ of $m$, with p-values sorted in ascending order, is:
+
+$$
+q_{(i)} = \min_{j \ge i} \left( \min\left(1, \frac{m}{j}\, p_{(j)}\right) \right)
+$$ {#eq-bh}
+
+@eq-lfc defines the fold change used in every volcano plot. @eq-bh defines the FDR column in every results table.
+
+````markdown
+$$
+\mathrm{LFC} = \log_2 \frac{\bar{x}_T}{\bar{x}_C}
+$$ {#eq-lfc}
+
+@eq-lfc defines the fold change.
+````
+
+## References to other chapters {#sec-g-crossrefs-chapters}
+
+A reference to a chapter or section uses its label: @sec-g-callouts lists the callout types, and @sec-g-figures shows the figure conventions.
+
+## Citations {#sec-g-crossrefs-citations}
+
+Cite software with its version, from the bibliography. This book is rendered with Quarto [@quarto]. Its figures use ggplot2 [@ggplot2] and its colours follow Okabe and Ito [@okabeito].
+
+````markdown
+This book is rendered with Quarto [@quarto].
+````
+
+## The linking rule {#sec-g-crossrefs-rule}
+
+Every limitation and every interpretation item cites the section it came from. A reader must be able to follow any claim back to the measurement in one click. See @sec-limitations for the gathered limitations.

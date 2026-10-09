@@ -1,8 +1,67 @@
 # Draft markers {#sec-g-draft}
 
-Placeholder. A later build step replaces this page.
+A draft book carries the questions each section must answer, and marks the sections still to be written. Neither shows in a normal render.
+
+## Draft questions {#sec-g-draft-questions}
+
+Write the questions a section must answer as an HTML comment directly after it. The comment starts with `<!-- Q` on its own line. Each question is a line that starts with `- `. The comment ends with `-->`.
+
+````markdown
+<!-- Q
+- What fraction of samples passed quality control?
+- Which threshold removed the most samples?
+-->
+````
+
+This section carries a real block of draft questions below this paragraph. In a normal render it is invisible.
 
 <!-- Q
-- Does the filter show this question in a draft render?
-- Is it hidden in a normal render?
+- Can a reader write a question block from this description alone?
+- Is the closing marker described exactly?
+-->
+
+## How the questions render {#sec-g-draft-render}
+
+| Render | Command | What the reader sees |
+|---|---|---|
+| Normal | `quarto render --profile gallery` | Nothing. The comment stays a comment. |
+| Draft | `quarto render --profile gallery,draft` | A collapsed tip, titled as draft questions, with a numbered list. |
+
+: How draft questions render in each profile. {#tbl-g-draft-render}
+
+The filter `filters/draft-questions.lua` does the swap. It runs only when the metadata flag `draft-questions` is true, which the draft profile sets.
+
+<!-- Q
+- Does the draft render show this block as a collapsed callout?
+-->
+
+## Sections still to be written {#sec-g-draft-tbw}
+
+::: {.callout-important}
+## To be written
+Robustness to the choice of normalisation. Compare depth scaling with an alternative, on the same thresholds.
+:::
+
+````markdown
+::: {.callout-important}
+## To be written
+Robustness to the choice of normalisation. Compare depth scaling with an alternative, on the same thresholds.
+:::
+````
+
+Use it for a section the author must still fill. Unlike a question block, it shows in every render, because a reader must know the section is missing.
+
+## Opting out of a register flag {#sec-g-draft-optout}
+
+The register guard flags interpretive constructions outside the synthesis chapter. Sometimes a flagged sentence is correct where it stands, for example a quotation from a study protocol. Put an opt-out comment on the line before it:
+
+````markdown
+<!-- register-ok: quoting the hypothesis from the study protocol -->
+The protocol states the hypothesis in its own words.
+````
+
+The reason is mandatory. An opt-out comment with an empty reason is itself reported as a violation. The reason tells a reviewer why the rule does not apply here.
+
+<!-- Q
+- Is it clear that an opt-out without a reason fails the check?
 -->

@@ -1,3 +1,51 @@
 # Interpretation {#sec-g-interpretation}
 
-Placeholder. A later build step replaces this page.
+::: {.callout-important}
+## This chapter is interpretation, not a result
+It is a worked reading of the gallery's synthetic two-group example. No number in it is new. Every claim cross-references the gallery section that measured it.
+:::
+
+This chapter has no code engine, so its numbers are typed here. In a real book, compute them with inline code from the same objects the measuring chapter used. A typed number drifts the first time the data change.
+
+## What was measured {#sec-g-interpretation-measured}
+
+| Measurement | Value | Section |
+|---|---|---|
+| Samples per group | 4 | @sec-g-anatomy |
+| Features tested after the count filter | 435 | @sec-g-anatomy-results |
+| Features that rose, past both thresholds | 6 | @sec-g-anatomy-results |
+| Features that fell, past both thresholds | 7 | @sec-g-anatomy-results |
+| Planted changes among tested features | 34 | @sec-g-tables-truth |
+| Planted changes recovered | 13 | @sec-g-tables-truth |
+
+: Measurements restated from the gallery chapters. {#tbl-g-interpretation-measured}
+
+## The reading {#sec-g-interpretation-reading}
+
+1. **The treatment changes a small set of features in both directions.** Thirteen features passed both thresholds, six up and seven down.
+   *Evidence:* the counts in @sec-g-anatomy-results.
+   *Why it could be wrong:* with four samples per group and a test that is not designed for counts, the calls are fragile. In this simulation none of the thirteen lacks a planted change (@sec-g-tables-truth). With real data the truth is unknown, and the FDR controls only the expected share of false positives.
+
+2. **The analysis misses most of the planted changes.** Thirteen of the 34 planted changes among tested features were recovered.
+   *Evidence:* the recovery table in @sec-g-tables-truth.
+   *Why it could be wrong:* recovery depends on the thresholds. A lower fold-change threshold would recover more, at the cost of more false positives. The reading is about this design at these thresholds, not about the data.
+
+3. **Depth does not drive the calls.** Depth varied little between samples, and the calls do not line up with the deepest samples.
+   *Evidence:* the depth figure in @sec-g-anatomy-depth.
+   *Why it could be wrong:* the check is visual. A formal test of depth against each call was not run.
+
+## What the data does not show {#sec-g-interpretation-not-shown}
+
+- It does not show that the 422 features that did not pass are unaffected. Their changes may sit below the detection floor of a four-sample design (@sec-g-anatomy).
+- It does not show why any feature changed. The data are counts, not mechanisms.
+- It does not show that the results would hold in a new experiment. Nothing here was replicated.
+- It cannot say anything about real samples. Every number is from simulated data (@sec-g-tables).
+
+## Questions for the bench {#sec-g-interpretation-bench}
+
+1. **Repeat the comparison with eight samples per group.** If the same thirteen features pass, and more planted changes are recovered, the first reading holds. If the thirteen change, the first reading was noise.
+2. **Measure the six risen features with an independent assay.** If they rise again, the call is confirmed. If they do not, the method needs review before any further reading.
+
+## Recommendation {#sec-g-interpretation-recommendation}
+
+Treat the thirteen features as candidates, not findings. Repeat the experiment with more samples per group before reading anything into single features. Do not report the 422 features that did not pass as unaffected, because their changes may sit below the detection floor. Do not rank the thirteen by fold change, because the largest observed effects are the most inflated.

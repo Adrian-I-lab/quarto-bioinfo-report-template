@@ -1,3 +1,109 @@
 # Tabsets and layout {#sec-g-layout}
 
-Placeholder. A later build step replaces this page.
+Layout tools keep a long chapter readable. Each example shows the rendered element, then its source, then when the house style uses it.
+
+## Tabsets {#sec-g-layout-tabsets}
+
+::: {.panel-tabset}
+### Control
+
+The control group has four samples. Its median depth sits close to the overall median.
+
+#### A nested heading
+
+Headings inside a tab stay inside that tab.
+
+### Treated
+
+The treated group has four samples. Its median depth sits close to the overall median.
+:::
+
+````markdown
+::: {.panel-tabset}
+### Control
+
+The control group has four samples.
+
+#### A nested heading
+
+Headings inside a tab stay inside that tab.
+
+### Treated
+
+The treated group has four samples.
+:::
+````
+
+Use it for one tab per group or per contrast, when the same figure repeats for each.
+
+Do not use tabs when the reader must compare panels side by side. A tab hides every panel but one. Use a multi-panel figure instead (see @sec-g-figures).
+
+## Margin notes {#sec-g-layout-margin}
+
+The depth threshold was set before the data were seen.
+
+::: {.column-margin}
+The threshold and its date are recorded in Methods (@sec-methods).
+:::
+
+````markdown
+::: {.column-margin}
+The threshold and its date are recorded in Methods.
+:::
+````
+
+Use it for a short aside that would break the flow of a paragraph.
+
+## Footnotes {#sec-g-layout-footnotes}
+
+Counts were converted to counts per million before plotting.[^cpm]
+
+[^cpm]: Counts per million divides each count by the sample total and multiplies by one million.
+
+````markdown
+Counts were converted to counts per million before plotting.[^cpm]
+
+[^cpm]: Counts per million divides each count by the sample total and multiplies by one million.
+````
+
+Use it for a definition or a source that most readers will not need.
+
+## Details blocks {#sec-g-layout-details}
+
+<details>
+<summary>Full list of filter steps</summary>
+
+1. Remove features with a mean count below the threshold.
+2. Remove samples below the depth cut-off.
+3. Recompute library sizes.
+
+</details>
+
+````markdown
+<details>
+<summary>Full list of filter steps</summary>
+
+1. Remove features with a mean count below the threshold.
+2. Remove samples below the depth cut-off.
+3. Recompute library sizes.
+
+</details>
+````
+
+Use it for a long list that supports a section but is not part of its argument.
+
+## Wide content {#sec-g-layout-wide}
+
+::: {.column-page}
+| Sample | Group | Depth | Features kept | Features passing | Notes |
+|---|---|---|---|---|---|
+| S1 | control | 98,120 | 441 | not applicable | Wide tables and wide figures use the page column. |
+:::
+
+````markdown
+::: {.column-page}
+A wide figure or table goes here.
+:::
+````
+
+Use it for a figure or table that needs more width than the body column. A wide heatmap is the usual case.
