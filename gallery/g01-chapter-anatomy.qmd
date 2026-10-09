@@ -1,3 +1,88 @@
 # Chapter anatomy {#sec-g-anatomy}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+sc <- synth_counts(n_per_group = 4)
+fdr <- report_param("fdr")
+lfc <- report_param("lfc_threshold")
+min_count <- report_param("min_count")
+kept <- rowMeans(sc$counts) >= min_count
+de <- synth_de(n_per_group = 4)[kept, ]
+de$FDR <- p.adjust(de$p, method = "BH")
+de$call <- factor(ifelse(de$FDR < fdr & de$log2FC >= lfc, "up",
+                  ifelse(de$FDR < fdr & de$log2FC <= -lfc, "down", "ns")),
+                  levels = c("up", "down", "ns"))
+depth <- data.frame(sample = colnames(sc$counts), group = sc$samples$group,
+                    reads = colSums(sc$counts))
+```
+
+This page is one complete chapter, written to the house anatomy, on the synthetic two-group example. Every element below appears in the order a real chapter uses.
+
+::: {.callout-tip}
+## In plain terms
+Some features were higher, and some lower, in the treated samples than in the control samples. This chapter counts them.
+:::
+
+::: {.callout-note}
+## Status
+Last run on the synthetic example data, `r format(Sys.Date(), "%Y-%m-%d")`.
+:::
+
+**Question.** How many features pass both thresholds when treated samples are compared with control samples?
+
+**Design.** Treated against control, `r sum(sc$samples$group == "control")` samples per group. Each feature is tested once, with a two-sample test on log CPM. The depth check is described, not tested.
+
+Features with a mean count of at least `r min_count` were tested, `r frac(sum(kept), length(kept))` of all features. A feature passes when its Benjamini-Hochberg FDR is below `r fdr` and its absolute log2 fold change is at least `r lfc`.
+
+## Depth per sample {#sec-g-anatomy-depth}
+
+::: {.callout-note appearance="simple"}
+## How to read this
+Each bar is one sample. Bars of similar height mean the samples were measured to a similar depth. The dashed line is the median.
+:::
+
+```{r}
+#| label: fig-g-anatomy-depth
+#| fig-cap: "Total counts per sample for the eight synthetic samples, filled by group. The dashed line marks the median depth across all samples."
+#| fig-alt: "A bar chart of eight bars of similar height, four per group, around a dashed median line."
+ggplot(depth, aes(sample, reads, fill = group)) +
+  geom_col() +
+  geom_hline(yintercept = median(depth$reads), linetype = "dashed") +
+  scale_fill_manual(values = unname(OKABE_ITO[1:2])) +
+  scale_y_continuous(labels = fmt) +
+  labs(x = NULL, y = "Total counts", fill = "Group")
+```
+
+Depth ranged from `r fmt(min(depth$reads))` to `r fmt(max(depth$reads))` counts per sample.
+
+<!-- Q
+- Is any sample far below the median depth?
+-->
+
+## Features passing both thresholds {#sec-g-anatomy-results}
+
+```{r}
+#| label: tbl-g-anatomy-results
+#| tbl-cap: "Features passing both thresholds, by direction, out of the features tested."
+tab <- table(de$call)
+knitr::kable(data.frame(
+  Direction = c("Rose", "Fell", "Did not pass"),
+  Features = vapply(c("up", "down", "ns"), function(k) frac(tab[[k]], nrow(de)), character(1)),
+  row.names = NULL
+))
+```
+
+Of `r fmt(nrow(de))` features tested, `r fmt(tab[["up"]])` rose and `r fmt(tab[["down"]])` fell past both thresholds.
+
+::: {.callout-warning appearance="simple"}
+## A count of zero is not a measured absence
+A zero in this table would mean no feature passed at this design's detection floor. It would not mean there is no difference.
+:::
+
+<!-- Q
+- How many features passed in each direction, out of how many tested?
+- How many passed the FDR threshold alone?
+-->
+
+Limitations from this chapter are gathered in @sec-limitations.

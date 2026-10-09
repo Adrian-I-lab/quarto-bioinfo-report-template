@@ -1,3 +1,82 @@
 # Provenance blocks {#sec-g-provenance}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+```
+
+A provenance page records what the book was built from. It is the page a reviewer reads first when a number looks wrong.
+
+## Input checksums {#sec-g-provenance-inputs}
+
+```{r}
+#| label: tbl-g-provenance-inputs
+#| tbl-cap: "Synthetic inputs written to a temporary folder, with the first 16 hex characters of each SHA-256."
+dir <- tempfile("inputs-")
+dir.create(dir)
+sc <- synth_counts(n_per_group = 4)
+write.table(sc$counts, file.path(dir, "counts.tsv"), sep = "\t", quote = FALSE)
+write.csv(sc$samples, file.path(dir, "samples.csv"), row.names = FALSE)
+files <- c("counts.tsv", "samples.csv", "annotation.tsv")
+present <- file.exists(file.path(dir, files))
+sums <- rep("not applicable", length(files))
+sums[present] <- vapply(file.path(dir, files[present]), sha256_file, character(1))
+sums[present & is.na(sums)] <- "checksum tool unavailable"
+knitr::kable(data.frame(Input = files, Required = c(TRUE, TRUE, FALSE), Present = present,
+                        `SHA-256 (first 16)` = sums, check.names = FALSE))
+```
+
+The checksum uses the digest package when it is installed, and a system tool otherwise. If no tool can run, the cell says "checksum tool unavailable". A check that could not run counts as a failure, not a pass. An MD5 sum is not used, because it is not collision-resistant.
+
+## Run manifest, present {#sec-g-provenance-manifest-present}
+
+```{r}
+#| echo: false
+#| output: asis
+manifest <- file.path(dir, "run-manifest.json")
+writeLines('{"written": "2026-01-15T09:30:00Z", "clean": true, "failed_steps": []}', manifest)
+m <- jsonlite::fromJSON(manifest)
+failed <- if (length(m$failed_steps)) paste(m$failed_steps, collapse = ", ") else "none"
+cat("The run manifest was written ", m$written, ". Clean run: ", tolower(m$clean),
+    ". Failed steps: ", failed, ".\n", sep = "")
+```
+
+## Run manifest, absent {#sec-g-provenance-manifest-absent}
+
+```{r}
+#| echo: false
+#| output: asis
+if (!file.exists(file.path(dir, "missing-manifest.json"))) {
+  cat(
+    "::: {.callout-caution}\n## No run manifest\n",
+    "No run manifest was found. When the analysis ran, whether it ran cleanly, and which ",
+    "steps failed are all unknown. Treat every result as unchecked.\n:::\n"
+  )
+}
+```
+
+The same code renders both states. The manifest file decides which one a reader sees.
+
+## The resolved environment {#sec-g-provenance-environment}
+
+```{r}
+#| label: tbl-g-provenance-environment
+#| tbl-cap: "Packages attached in the session that rendered this page, with the versions that actually loaded."
+pk <- sessionInfo()$otherPkgs
+knitr::kable(data.frame(
+  Package = names(pk),
+  Version = vapply(pk, function(p) p$Version, character(1)),
+  row.names = NULL
+))
+```
+
+This is what loaded, not what a lockfile pins. When the two disagree, the loaded versions produced the numbers.
+
+## A parameter not decided yet {#sec-g-provenance-params}
+
+`_params.yml` holds the key `decided_later` with the value `null`. Asking for it stops the render with a message, rather than guessing a default. Here the call runs inside `try()`, so the page can show the message:
+
+```{r}
+res <- try(report_param("decided_later"), silent = TRUE)
+cat(conditionMessage(attr(res, "condition")))
+```

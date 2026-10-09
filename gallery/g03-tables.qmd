@@ -1,3 +1,100 @@
 # Tables {#sec-g-tables}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+sc <- synth_counts(n_per_group = 4)
+fdr <- report_param("fdr")
+lfc <- report_param("lfc_threshold")
+kept <- rowMeans(sc$counts) >= report_param("min_count")
+de <- synth_de(n_per_group = 4)[kept, ]
+de$FDR <- p.adjust(de$p, method = "BH")
+de$passed <- de$FDR < fdr & abs(de$log2FC) >= lfc
+de$direction <- ifelse(!de$passed, "did not pass", ifelse(de$log2FC > 0, "rose", "fell"))
+truth <- sc$truth[kept, ]
+```
+
+Every table has a label and a caption. Numbers are formatted by helpers, and every share carries its denominator.
+
+## A computed table {#sec-g-tables-kable}
+
+```{r}
+#| label: tbl-g-tables-top
+#| tbl-cap: "The ten synthetic features with the smallest p-values, with log2 fold change, p-value, and FDR."
+top <- head(de[order(de$p), c("gene", "log2FC", "p", "FDR")], 10)
+top$log2FC <- round(top$log2FC, 2)
+top$p <- signif(top$p, 2)
+top$FDR <- signif(top$FDR, 2)
+knitr::kable(top, row.names = FALSE, col.names = c("Feature", "log2 fold change", "p", "FDR"))
+```
+
+## A paged table {#sec-g-tables-paged}
+
+```{r}
+#| label: tbl-g-tables-paged
+#| tbl-cap: "Every tested synthetic feature, ten rows per page. Use the arrows to page through."
+de[, c("gene", "log2FC", "p", "FDR", "direction")]
+```
+
+With `df-print: paged` set in `_quarto.yml`, a printed data frame becomes a paged table. Use it for any table longer than about 20 rows.
+
+## Numbers with their denominators {#sec-g-tables-frac}
+
+```{r}
+#| label: tbl-g-tables-frac
+#| tbl-cap: "Tested features by call, as counts with thousands separators and as shares of the features tested."
+calls <- table(factor(de$direction, levels = c("rose", "fell", "did not pass")))
+knitr::kable(data.frame(
+  Call = names(calls),
+  Features = fmt(as.integer(calls)),
+  Share = vapply(as.integer(calls), function(k) frac(k, nrow(de)), character(1))
+))
+```
+
+`fmt()` adds thousands separators. `frac()` writes "k of n (p%)", so no percentage appears without its denominator.
+
+## Cells that cannot have a value {#sec-g-tables-na}
+
+```{r}
+#| label: tbl-g-tables-na
+#| tbl-cap: "Summary per group. A fold change against the control group cannot be computed for the control group itself."
+lib <- colSums(sc$counts)
+logcpm <- log2(t(t(sc$counts + 1) / (lib + 1) * 1e6))[kept, ]
+treated <- sc$samples$group == "treated"
+knitr::kable(data.frame(
+  Group = c("control", "treated"),
+  Samples = c(sum(!treated), sum(treated)),
+  `Median depth` = fmt(c(median(lib[!treated]), median(lib[treated]))),
+  `Features past both thresholds against control` = c("not applicable", fmt(sum(de$passed))),
+  check.names = FALSE
+))
+```
+
+The control row reads "not applicable", not 0. A 0 would claim that a comparison was made and found nothing. No comparison of the control group with itself was made.
+
+## The split by direction and subset {#sec-g-tables-split}
+
+```{r}
+#| label: tbl-g-tables-split
+#| tbl-cap: "Features passing both thresholds, split by direction and by expression tier (thirds of mean log CPM)."
+tier <- cut(rowMeans(logcpm), quantile(rowMeans(logcpm), c(0, 1/3, 2/3, 1)),
+            labels = c("low", "middle", "high"), include.lowest = TRUE)
+split_tab <- table(factor(tier, levels = c("low", "middle", "high")),
+                   factor(de$direction, levels = c("rose", "fell", "did not pass")))
+knitr::kable(as.data.frame.matrix(split_tab))
+```
+
+## Recovery of the planted changes {#sec-g-tables-truth}
+
+```{r}
+#| label: tbl-g-tables-truth
+#| tbl-cap: "Planted changes against calls, for the tested synthetic features. The data were simulated, so the truth is known."
+knitr::kable(data.frame(
+  Truth = c("planted change", "no planted change"),
+  `Passed both thresholds` = c(sum(truth$planted & de$passed), sum(!truth$planted & de$passed)),
+  `Did not pass` = c(sum(truth$planted & !de$passed), sum(!truth$planted & !de$passed)),
+  check.names = FALSE
+))
+```
+
+Of `r fmt(sum(truth$planted))` planted changes among tested features, `r frac(sum(truth$planted & de$passed), sum(truth$planted))` passed both thresholds. Of the `r fmt(sum(de$passed))` features that passed, `r fmt(sum(!truth$planted & de$passed))` had no planted change.
