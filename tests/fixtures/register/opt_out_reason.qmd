@@ -1,0 +1,4 @@
+# A results section
+
+<!-- register-ok: quoting the hypothesis from the study protocol -->
+The protocol states that the shift suggests that the treatment works.

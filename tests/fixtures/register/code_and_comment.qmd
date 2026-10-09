@@ -1,0 +1,10 @@
+# A results section
+
+```{r}
+# this comment suggests that code is skipped
+x <- "is driven by"
+```
+
+<!-- The shift suggests that this comment is skipped. -->
+
+The median shift was 1.8 log2 units.
