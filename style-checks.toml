@@ -1,0 +1,209 @@
+# Shared settings for the style checks in tools/style/.
+# STYLE-GUIDE.md and the checks read the same lists from this file.
+# Never edit a list to make content pass. Fix the content, or add an
+# opt-out comment that carries a reason.
+
+[register]
+# The register guard only reads .qmd files. These are exempt because they
+# are allowed, or required, to interpret or to quote interpretive phrases.
+# Paths are relative to the repository root; basenames also match.
+exempt = [
+  "chapters/90-interpretation.qmd",
+  "gallery/g10-interpretation.qmd",
+  "index.qmd",
+  "reference/glossary.qmd",
+  "reference/limitations.qmd",
+]
+
+# Interpretive constructions. Every entry is multi-word, never a bare word.
+interpretive = [
+  # Inference
+  "suggests that",
+  "suggesting that",
+  "suggest that",
+  "indicates that",
+  "indicating that",
+  "implies that",
+  "implying that",
+  "points to a",
+  "points towards",
+  "is evidence of",
+  "is evidence for",
+  "we conclude",
+  "it follows that",
+  # Compatibility
+  "consistent with a",
+  "consistent with the",
+  "in line with",
+  "in keeping with",
+  "compatible with a",
+  "supports the hypothesis",
+  # Causal reading
+  "is driven by",
+  "are driven by",
+  "is caused by",
+  "are caused by",
+  "as a result of",
+  "is responsible for",
+  "are responsible for",
+  "mediated by the",
+  "leads to a",
+  # Explanation frame
+  "the simplest explanation",
+  "can be explained by",
+  "is explained by",
+  "accounts for the",
+  "this reflects",
+  "reflects a",
+  "reflecting a",
+  # Expectation
+  "as expected",
+  "as anticipated",
+  "than expected",
+  "contrary to expectation",
+  # Claims about meaning
+  "biologically meaningful",
+  "biologically relevant",
+  "functionally important",
+  "plays a role",
+  "plays a key role",
+  "is required for",
+  "key regulator",
+  # Hedged interpretation
+  "may reflect",
+  "might reflect",
+  "could reflect",
+  "may indicate",
+  "could indicate",
+  "likely reflects",
+  "it is likely that",
+  "presumably because",
+  # Forward claims
+  "has implications for",
+  "paves the way",
+  "therapeutic potential",
+  "will allow us",
+]
+
+# A denial within denial_window characters before a hit excuses that hit.
+# Denying an interpretation is the wanted behaviour.
+denials = [
+  "says nothing about",
+  "say nothing about",
+  "does not show",
+  "do not show",
+  "does not tell us",
+  "cannot show",
+  "cannot tell us",
+  "is not evidence",
+  "are not evidence",
+  "does not mean",
+  "does not imply",
+  "cannot be used as evidence",
+  "does not establish",
+  "cannot distinguish",
+  "no claim is made",
+  "is not a test of",
+  "without implying",
+  "is not a reading",
+]
+denial_window = 90
+
+[absence]
+# Claims of no difference. Each needs an equivalence result or the
+# detection floor in the same paragraph.
+phrases = [
+  "no difference",
+  "no differences",
+  "did not differ",
+  "does not differ",
+  "do not differ",
+  "not different",
+  "unchanged",
+  "no change",
+  "no changes",
+  "no effect",
+  "no effects",
+  "indistinguishable",
+  "unaffected",
+  "not affected",
+  "no detectable",
+  "the same in both",
+  "no significant difference",
+]
+# Any of these in the same paragraph supports an absence claim.
+markers = [
+  "equivalence",
+  "tost",
+  "detection floor",
+  "minimum detectable",
+]
+# A cross-reference to this section label also supports an absence claim.
+detection_floor_section = "sec-detection-floor"
+
+[prose]
+# Longer sentences are a warning, not an error.
+max_sentence_words = 35
+
+# Filler phrases. An error. Quote one in a guide inside backticks.
+banned = [
+  "it is important to note",
+  "it should be noted",
+  "it is worth noting",
+  "needless to say",
+  "it goes without saying",
+  "in order to",
+  "a number of",
+  "at the end of the day",
+  "due to the fact that",
+  "the fact that",
+  "in terms of",
+  "first and foremost",
+  "last but not least",
+  "as a matter of fact",
+  "very unique",
+  "delve into",
+]
+
+# US spelling to Australian spelling. Whole words only. A warning.
+[prose.spelling]
+color = "colour"
+colors = "colours"
+colored = "coloured"
+analyze = "analyse"
+analyzed = "analysed"
+analyzing = "analysing"
+normalize = "normalise"
+normalized = "normalised"
+normalization = "normalisation"
+behavior = "behaviour"
+behaviors = "behaviours"
+center = "centre"
+centered = "centred"
+modeled = "modelled"
+modeling = "modelling"
+labeled = "labelled"
+labeling = "labelling"
+favor = "favour"
+favorable = "favourable"
+gray = "grey"
+organize = "organise"
+organized = "organised"
+summarize = "summarise"
+summarized = "summarised"
+visualize = "visualise"
+visualization = "visualisation"
+optimize = "optimise"
+characterize = "characterise"
+recognize = "recognise"
+standardize = "standardise"
+randomized = "randomised"
+catalog = "catalogue"
+artifact = "artefact"
+artifacts = "artefacts"
+tumor = "tumour"
+fiber = "fibre"
+
+[scan]
+# Never scanned by any check.
+exclude = ["tests/fixtures/", ".venv/", "_book/", ".quarto/", "_freeze/"]
