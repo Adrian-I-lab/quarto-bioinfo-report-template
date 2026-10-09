@@ -120,6 +120,39 @@ not_applicable <- function(what, why) {
 }
 
 # ---------------------------------------------------------------------------
+# Checksums for provenance
+# ---------------------------------------------------------------------------
+
+# SHA-256 of a file, truncated to the first n hex characters. Uses the
+# digest package if installed, else a system tool. Returns NA when no tool
+# can run. A check that could not run counts as a failure, not a pass.
+sha256_file <- function(path, n = 16) {
+  full <- NA_character_
+  if (requireNamespace("digest", quietly = TRUE)) {
+    full <- digest::digest(file = path, algo = "sha256")
+  } else {
+    tools <- list(
+      c("sha256sum", ""),
+      c("shasum", "-a 256"),
+      c("openssl", "dgst -sha256 -r")
+    )
+    for (t in tools) {
+      if (!nzchar(Sys.which(t[1]))) next
+      out <- tryCatch(
+        system2(t[1], c(t[2], shQuote(path)), stdout = TRUE, stderr = FALSE),
+        error = function(e) character()
+      )
+      hex <- regmatches(out, regexpr("[0-9a-f]{64}", out))
+      if (length(hex) == 1) {
+        full <- hex
+        break
+      }
+    }
+  }
+  if (is.na(full)) NA_character_ else substr(full, 1, n)
+}
+
+# ---------------------------------------------------------------------------
 # Figures for papers
 # ---------------------------------------------------------------------------
 

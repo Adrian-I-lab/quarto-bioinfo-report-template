@@ -78,6 +78,12 @@ class TestSetupPy(unittest.TestCase):
         self.assertTrue(((de["FDR"] >= de["p"]) & (de["FDR"] <= 1)).all())
         self.assertTrue(de.equals(s.synth_de()))
 
+    def test_sha256_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "x.txt"
+            path.write_text("abc\n", encoding="utf-8")
+            self.assertEqual(s.sha256_file(path), "edeaaff3f1774ad2")
+
     def test_embedding(self):
         emb = s.synth_embedding(n=900, k=3)
         self.assertEqual(emb.shape, (900, 3))

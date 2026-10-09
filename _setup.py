@@ -8,6 +8,7 @@ outputs on every run, although the exact values differ from R.
 
 from __future__ import annotations
 
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -176,6 +177,20 @@ def not_applicable(what: str, why: str) -> str:
         "Nothing was computed and nothing is hidden.\n"
         ":::\n"
     )
+
+
+# ---------------------------------------------------------------------------
+# Checksums for provenance
+# ---------------------------------------------------------------------------
+
+
+def sha256_file(path: str | os.PathLike, n: int = 16) -> str:
+    """SHA-256 of a file, truncated to the first n hex characters."""
+    digest = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for block in iter(lambda: fh.read(1 << 16), b""):
+            digest.update(block)
+    return digest.hexdigest()[:n]
 
 
 # ---------------------------------------------------------------------------

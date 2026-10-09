@@ -42,4 +42,8 @@ msg <- tryCatch(report_root(), error = function(e) conditionMessage(e))
 Sys.setenv(REPORT_ROOT = old)
 check("REPORT_ROOT without _quarto.yml stops", grepl("holds no _quarto.yml", msg, fixed = TRUE))
 
+tmp <- tempfile(fileext = ".txt")
+writeLines("abc", tmp)
+check("sha256 of a known file", identical(sha256_file(tmp), "edeaaff3f1774ad2"))
+
 cat("R setup tests passed:", n_pass, "\n")
