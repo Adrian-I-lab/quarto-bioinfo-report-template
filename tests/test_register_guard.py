@@ -80,7 +80,8 @@ class TestRegisterGuard(unittest.TestCase):
     def test_repository_content_is_clean(self):
         code, out = run("--strict", ROOT / "chapters", ROOT / "gallery")
         examined = int(out.strip().splitlines()[-1].split("files_examined=")[1].split()[0])
-        self.assertGreaterEqual(examined, 10)
+        # The template itself (with its gallery) has at least 10 files to read.
+        self.assertGreaterEqual(examined, 10 if (ROOT / "gallery").exists() else 1)
         self.assertEqual(code, 0, out)
 
 

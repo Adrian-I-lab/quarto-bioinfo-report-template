@@ -113,7 +113,7 @@ class TestProseLint(unittest.TestCase):
         proc = subprocess.run([sys.executable, str(LINT), "."], capture_output=True, text=True, cwd=ROOT)
         self.assertEqual(proc.returncode, 0, proc.stdout)
         examined = int(proc.stdout.strip().splitlines()[-1].split("files_examined=")[1].split()[0])
-        self.assertGreaterEqual(examined, 15)
+        self.assertGreaterEqual(examined, 15 if (ROOT / "gallery").exists() else 1)
 
 
 if __name__ == "__main__":
