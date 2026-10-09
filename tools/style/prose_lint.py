@@ -27,8 +27,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _qmd  # noqa: E402
 
-EM_DASH = "—"
-EN_DASH = "–"
+EM_DASH = "\u2014"
+EN_DASH = "\u2013"
 _URL = re.compile(r"https?://\S+|<[^>\s]+>|\]\([^)]*\)")
 _CITE = re.compile(r"\[?-?@[\w:.-]+\]?")
 _ABBREV = re.compile(r"\b(e\.g|i\.e|et al|vs|Fig|Figs|approx|cf|etc)\.", re.IGNORECASE)

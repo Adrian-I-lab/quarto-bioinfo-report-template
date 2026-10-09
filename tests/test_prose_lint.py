@@ -12,8 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LINT = ROOT / "tools" / "style" / "prose_lint.py"
-EM = "—"
-EN = "–"
+EM = "\u2014"
+EN = "\u2013"
 
 
 def lint(text, name="doc.qmd", *flags):
