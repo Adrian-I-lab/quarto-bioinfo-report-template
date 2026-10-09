@@ -1,3 +1,57 @@
 # Limitations {#sec-limitations}
 
-Placeholder. A later build step replaces this page.
+Every "this cannot show" statement in the book, gathered in one place. Each links back to the section that measured it.
+
+## From the design {#sec-limitations-design}
+
+::: {.content-hidden when-profile="gallery"}
+- With four samples per group, the synthetic example design cannot separate a treatment effect from a difference between individual samples (@sec-design-samples).
+:::
+
+::: {.content-visible when-profile="gallery"}
+- The gallery's synthetic design has four samples per group. It cannot separate a group effect from a sample effect (@sec-g-anatomy).
+:::
+
+## From the detection floor {#sec-limitations-floor}
+
+::: {.content-hidden when-profile="gallery"}
+- Changes smaller than the per-feature floor cannot be seen. A feature that did not pass may still have changed (@sec-detection-floor-mde).
+:::
+
+::: {.content-visible when-profile="gallery"}
+- The gallery shows figures, not a floor. No gallery figure can show that a change is absent (@sec-g-figures).
+:::
+
+## From the material {#sec-limitations-material}
+
+::: {.content-hidden when-profile="gallery"}
+- Replace with what the samples themselves cannot show, for example a mixture of cell types (@sec-quality-depth).
+:::
+
+::: {.content-visible when-profile="gallery"}
+- The data are simulated. They cannot show anything about a real sample (@sec-g-tables).
+:::
+
+## From the annotation {#sec-limitations-annotation}
+
+::: {.content-hidden when-profile="gallery"}
+- Replace with what the feature annotation cannot show, for example features with no known function (@sec-results-volcano).
+:::
+
+::: {.content-visible when-profile="gallery"}
+- The feature names are generated. They carry no annotation at all (@sec-g-provenance).
+:::
+
+## Not yet implemented {#sec-limitations-not-implemented}
+
+| Missing item | Chapter it belongs in |
+|---|---|
+| Permutation calibration of the FDR | Robustness |
+| An equivalence test for features that did not pass | Results |
+| Replace or extend this list | The chapter that needs it |
+
+<!-- Q
+- Is every "cannot show" statement in the book listed here, with a link back?
+-->
+
+An absent section is a gap, not a clean bill.

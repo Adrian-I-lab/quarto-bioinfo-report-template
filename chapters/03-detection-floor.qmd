@@ -1,3 +1,60 @@
-# Detection floor {#sec-detection-floor}
+# What this design could detect {#sec-detection-floor}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+sc <- synth_counts(n_per_group = 4)
+lib <- colSums(sc$counts)
+logcpm <- log2(t(t(sc$counts + 1) / (lib + 1) * 1e6))
+treated <- sc$samples$group == "treated"
+n_per_group <- sum(treated)
+pooled_sd <- sqrt((apply(logcpm[, treated], 1, var) + apply(logcpm[, !treated], 1, var)) / 2)
+alpha <- report_param("fdr")
+power <- report_param("power")
+mde <- (qnorm(1 - alpha / 2) + qnorm(power)) * pooled_sd * sqrt(2 / n_per_group)
+floor_df <- data.frame(mean_logcpm = rowMeans(logcpm), mde = mde)
+```
+
+::: {.callout-tip}
+## In plain terms
+This chapter says how large a change had to be before this design could see it. Smaller changes may exist but would be missed.
+:::
+
+::: {.callout-note}
+## Status
+Last run on the synthetic example data, `r format(Sys.Date(), "%Y-%m-%d")`. Replace with your data source and date.
+:::
+
+**Question.** What is the smallest log2 fold change this design could detect, for a typical feature?
+
+**Design.** `r n_per_group` samples per group. The minimum detectable effect is computed per feature from its pooled within-group standard deviation of log CPM. Nothing is tested.
+
+The minimum detectable effect uses a two-sided normal approximation at alpha `r alpha` and power `r power`. It ignores the multiple-testing correction, so it is a lower bound on the true floor.
+
+## Smallest detectable change {#sec-detection-floor-mde}
+
+Example output on synthetic data. Replace with your analysis.
+
+::: {.callout-note appearance="simple"}
+## How to read this
+Each point is one feature. A point high on the y-axis is a feature whose change would have to be large before this design could see it. The dashed line is the median floor.
+:::
+
+```{r}
+#| label: fig-detection-floor-mde
+#| fig-cap: "Minimum detectable absolute log2 fold change per feature against mean log CPM, for all 500 synthetic features. The dashed line marks the median floor."
+#| fig-alt: "A scatter plot of 500 points. The floor is highest for features with low mean log CPM and falls as the mean rises."
+ggplot(floor_df, aes(mean_logcpm, mde)) +
+  geom_point(alpha = 0.5, colour = HOUSE_PAL[["down"]]) +
+  geom_hline(yintercept = median(floor_df$mde), linetype = "dashed") +
+  labs(x = "Mean log CPM", y = "Minimum detectable |log2 fold change|")
+```
+
+The median detection floor is `r round(median(mde), 2)` log2 units. For `r frac(sum(mde > report_param("lfc_threshold")), length(mde))` features, the floor is above the fold-change threshold of `r report_param("lfc_threshold")`.
+
+<!-- Q
+- What is the median detection floor, and how does it compare with the fold-change threshold?
+- Which part of the expression range is effectively untestable here?
+-->
+
+Limitations from this chapter are gathered in @sec-limitations.

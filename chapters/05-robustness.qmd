@@ -1,3 +1,74 @@
 # Robustness {#sec-robustness}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+sc <- synth_counts(n_per_group = 4)
+fdr <- report_param("fdr")
+lfc <- report_param("lfc_threshold")
+kept <- rowMeans(sc$counts) >= report_param("min_count")
+counts <- sc$counts[kept, ]
+groups <- sc$samples$group
+
+n_passing <- function(cols) {
+  x <- counts[, cols]
+  lib <- colSums(x)
+  logcpm <- log2(t(t(x + 1) / (lib + 1) * 1e6))
+  tr <- groups[cols] == "treated"
+  p <- apply(logcpm, 1, function(v) tryCatch(t.test(v[tr], v[!tr])$p.value, error = function(e) 1))
+  l2fc <- rowMeans(logcpm[, tr, drop = FALSE]) - rowMeans(logcpm[, !tr, drop = FALSE])
+  sum(p.adjust(p, "BH") < fdr & abs(l2fc) >= lfc)
+}
+full <- n_passing(seq_len(ncol(counts)))
+jack <- vapply(seq_len(ncol(counts)), function(i) n_passing(-i), numeric(1))
+jack_df <- data.frame(left_out = colnames(counts), group = groups, passing = jack)
+```
+
+::: {.callout-tip}
+## In plain terms
+This chapter re-runs the analysis with one sample left out at a time, to see how much the count of changed features depends on any single sample.
+:::
+
+::: {.callout-note}
+## Status
+Last run on the synthetic example data, `r format(Sys.Date(), "%Y-%m-%d")`. Replace with your data source and date.
+:::
+
+**Question.** How much does the number of passing features move when one sample is left out?
+
+**Design.** A jackknife over all `r ncol(counts)` samples, with the same thresholds as Results. Nothing new is tested. Each run repeats the Results test on a subset.
+
+Each run uses an FDR threshold of `r fdr` and a minimum absolute log2 fold change of `r lfc`.
+
+## Leave-one-out stability {#sec-robustness-jackknife}
+
+Example output on synthetic data. Replace with your analysis.
+
+```{r}
+#| label: tbl-robustness-jackknife
+#| tbl-cap: "Features passing both thresholds with each sample left out in turn, against the full-data count."
+knitr::kable(jack_df, col.names = c("Sample left out", "Its group", "Features passing"))
+```
+
+With all samples, `r fmt(full)` features passed. With one sample left out, the count ranged from `r fmt(min(jack))` to `r fmt(max(jack))`.
+
+<!-- Q
+- Which single sample moves the count the most when left out?
+- Is the range wide compared with the full-data count?
+-->
+
+## Permutation calibration {#sec-robustness-permutation}
+
+```{r}
+#| echo: false
+not_applicable(
+  "a check that the FDR holds when group labels are shuffled",
+  "this starter book has not set a permutation count"
+)
+```
+
+<!-- Q
+- If permutation calibration is added, how many permutations, and what observed FDR would count as a failure?
+-->
+
+Limitations from this chapter are gathered in @sec-limitations.

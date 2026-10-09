@@ -1,3 +1,93 @@
 # Results {#sec-results}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+sc <- synth_counts(n_per_group = 4)
+fdr <- report_param("fdr")
+lfc <- report_param("lfc_threshold")
+kept <- rowMeans(sc$counts) >= report_param("min_count")
+de <- synth_de(n_per_group = 4)[kept, ]
+de$FDR <- p.adjust(de$p, method = "BH")
+de$call <- ifelse(de$FDR < fdr & de$log2FC >= lfc, "up",
+           ifelse(de$FDR < fdr & de$log2FC <= -lfc, "down", "ns"))
+de$call <- factor(de$call, levels = c("up", "down", "ns"))
+n_up <- sum(de$call == "up")
+n_down <- sum(de$call == "down")
+```
+
+::: {.callout-tip}
+## In plain terms
+This chapter counts the features that changed between the two groups by more than the chosen thresholds.
+:::
+
+::: {.callout-note}
+## Status
+Last run on the synthetic example data, `r format(Sys.Date(), "%Y-%m-%d")`. Replace with your data source and date.
+:::
+
+**Question.** How many features pass both the FDR and the fold-change thresholds, and in which direction?
+
+**Design.** Treated against control, `r sum(sc$samples$group == "treated")` samples per group. Each kept feature is tested with a two-sample test on log CPM.
+
+Features with a mean count of at least `r report_param("min_count")` were tested (`r fmt(nrow(de))` features). A feature passes when its Benjamini-Hochberg FDR is below `r fdr` and its absolute log2 fold change is at least `r lfc`.
+
+::: {.callout-important}
+## Which test this chapter uses
+The synthetic example uses a Welch t-test on log CPM, because it needs no extra packages. It is not a recommended method for count data. Replace it with your own method and say which in Methods.
+:::
+
+## Features passing both thresholds {#sec-results-volcano}
+
+Example output on synthetic data. Replace with your analysis.
+
+::: {.callout-note appearance="simple"}
+## How to read this
+Each point is one feature. Points further right rose in the treated group, and points further left fell. Points higher up have smaller p-values. Shape and colour both show the call, so the figure reads in greyscale.
+:::
+
+```{r}
+#| label: fig-results-volcano
+#| fig-cap: "Log2 fold change against minus log10 p-value for each tested feature. Shape and colour show the call. Dashed lines mark the fold-change thresholds."
+#| fig-alt: "A volcano plot. Most points sit low and near zero. Two groups of triangles sit high on the left and right, beyond the dashed fold-change lines."
+ggplot(de, aes(log2FC, -log10(p), colour = call, shape = call)) +
+  geom_point(alpha = 0.8) +
+  geom_vline(xintercept = c(-lfc, lfc), linetype = "dashed") +
+  scale_colour_manual(values = HOUSE_PAL[c("up", "down", "ns")], drop = FALSE) +
+  scale_shape_manual(values = c(up = 17, down = 25, ns = 16), drop = FALSE) +
+  labs(x = "log2 fold change (treated / control)", y = "-log10 p", colour = "Call", shape = "Call")
+```
+
+`r fmt(n_up)` features rose and `r fmt(n_down)` fell, out of `r fmt(nrow(de))` tested. Together that is `r frac(n_up + n_down, nrow(de))`.
+
+This figure cannot be used as evidence that features below the thresholds are unaffected. Their changes may sit below the detection floor (@sec-detection-floor).
+
+<!-- Q
+- How many features passed in each direction, out of how many tested?
+- How many features passed the FDR threshold but not the fold-change threshold?
+-->
+
+## Counts by direction {#sec-results-counts}
+
+```{r}
+#| label: tbl-results-counts
+#| tbl-cap: "Features passing both thresholds, by direction, with the number tested as the denominator."
+counts <- table(de$call)
+knitr::kable(data.frame(
+  Direction = c("Rose", "Fell", "Did not pass"),
+  Features = as.integer(counts[c("up", "down", "ns")]),
+  Share = vapply(as.integer(counts[c("up", "down", "ns")]),
+                 function(k) frac(k, nrow(de)), character(1))
+))
+```
+
+::: {.callout-warning appearance="simple"}
+## A count of zero is not a measured absence
+A zero in this table means no feature passed at this design's detection floor (@sec-detection-floor). It does not mean there is no difference.
+:::
+
+<!-- Q
+- Is any count in this table zero, and if so, what is the detection floor it should be read against?
+-->
+
+Limitations from this chapter are gathered in @sec-limitations.

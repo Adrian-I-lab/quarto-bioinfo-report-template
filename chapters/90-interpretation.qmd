@@ -1,3 +1,54 @@
 # Interpretation {#sec-interpretation}
 
-Placeholder. A later build step replaces this page.
+::: {.callout-important}
+## This chapter is interpretation, not a result
+It is the author's reading of the measurements, or an assistant's reading checked by the author. No number in it is new. Every claim cross-references the section that measured it.
+:::
+
+## What was measured {#sec-interpretation-measured}
+
+Restate each key number here, with the section that measured it. In a real book, compute the numbers with inline code. Do not retype them.
+
+| Measurement | Value | Section |
+|---|---|---|
+| Samples per group | To be filled | @sec-design-samples |
+| Features passing the count filter | To be filled | @sec-quality-filter |
+| Median detection floor | To be filled | @sec-detection-floor-mde |
+| Features passing both thresholds | To be filled | @sec-results-volcano |
+| Range under leave-one-out | To be filled | @sec-robustness-jackknife |
+
+<!-- Q
+- Does every number in this table match its section exactly?
+-->
+
+## The reading {#sec-interpretation-reading}
+
+::: {.callout-important}
+## To be written
+Write each reading as a numbered item in this format. First, the reading in one sentence. Then *Evidence:* with the sections and numbers it rests on. Then *Why it could be wrong:* with the strongest counter-argument you can find. The gallery chapter on interpretation shows a worked example.
+:::
+
+<!-- Q
+- What is the single most important reading, and what would make it wrong?
+-->
+
+## What the data does not show {#sec-interpretation-not-shown}
+
+::: {.callout-important}
+## To be written
+Mirror each reading with what the data cannot support. This section is the more important of the two. Link each item to the section that set its limit.
+:::
+
+## Questions for the bench {#sec-interpretation-bench}
+
+::: {.callout-important}
+## To be written
+Name each measurement that would settle an open question, and say what each outcome would mean.
+:::
+
+## Recommendation {#sec-interpretation-recommendation}
+
+::: {.callout-important}
+## To be written
+One paragraph. What to do next, and what not to do.
+:::

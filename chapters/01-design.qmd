@@ -1,3 +1,49 @@
 # Design {#sec-design}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+sc <- synth_counts(n_per_group = 4)
+n_per_group <- table(sc$samples$group)
+```
+
+::: {.callout-tip}
+## In plain terms
+This chapter says which samples were compared, how many there were, and which thresholds the analysis used.
+:::
+
+::: {.callout-note}
+## Status
+Last run on the synthetic example data, `r format(Sys.Date(), "%Y-%m-%d")`. Replace with your data source and date.
+:::
+
+**Question.** What comparison does this book make, and with how many samples per group?
+
+**Design.** Two groups, control and treated, with `r n_per_group[["control"]]` and `r n_per_group[["treated"]]` samples. Features are tested one at a time. Nothing in this chapter is tested. It only describes the design.
+
+The analysis compares `r fmt(nrow(sc$samples))` samples across `r fmt(nrow(sc$counts))` features, at an FDR threshold of `r report_param("fdr")`, a minimum absolute log2 fold change of `r report_param("lfc_threshold")`, and a minimum mean count of `r report_param("min_count")`.
+
+## The samples {#sec-design-samples}
+
+Example output on synthetic data. Replace with your analysis.
+
+```{r}
+#| label: tbl-design-samples
+#| tbl-cap: "Samples in each group of the synthetic example."
+knitr::kable(sc$samples, col.names = c("Sample", "Group"))
+```
+
+<!-- Q
+- How many samples are in each group, and how were they assigned?
+- Which samples were planned but are missing, and why?
+-->
+
+## What is held constant {#sec-design-constant}
+
+List here what was kept the same across groups, for example batch, operator, and processing date. State each one as a fact with its source.
+
+<!-- Q
+- Which factors could differ between groups other than the treatment?
+-->
+
+Limitations from this chapter are gathered in @sec-limitations.

@@ -1,3 +1,48 @@
 # Methods {#sec-methods}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+pkgs <- c("ggplot2", "knitr", "yaml")
+ver <- function(p) as.character(packageVersion(p))
+r_version <- paste(R.version$major, R.version$minor, sep = ".")
+sc <- synth_counts(n_per_group = 4)
+```
+
+Methods prose is generated from the run's parameters and from the package versions that loaded at render time. It is never typed. Copy it into a paper as it stands.
+
+## Analysis {#sec-methods-analysis}
+
+```{r}
+#| echo: false
+#| output: asis
+cat(paste0(
+  "Counts were simulated for ", fmt(nrow(sc$counts)), " features in two groups of ",
+  sum(sc$samples$group == "treated"), " samples ",
+  "(synthetic example data). Features with a mean count below ", report_param("min_count"),
+  " were removed. Counts were converted to log2 counts per million with a prior count of 1. ",
+  "Each feature was compared between groups with a Welch two-sample t-test, and p-values ",
+  "were adjusted with the Benjamini-Hochberg method. A feature passed when its adjusted ",
+  "p-value was below ", report_param("fdr"), " and its absolute log2 fold change was at least ",
+  report_param("lfc_threshold"), ". The minimum detectable effect used a normal approximation ",
+  "at power ", report_param("power"), ". Analyses used R ", r_version, " [@r], ggplot2 ",
+  ver("ggplot2"), " [@ggplot2], and knitr ", ver("knitr"), " [@knitr]. The report was ",
+  "rendered with Quarto [@quarto].\n"
+))
+```
+
+<!-- Q
+- Does the methods paragraph name every step that changed the data, with its parameter?
+-->
+
+## Software {#sec-methods-software}
+
+```{r}
+#| label: tbl-methods-software
+#| tbl-cap: "Software that loaded at render time, with the version that actually loaded."
+knitr::kable(data.frame(
+  Software = c("R", pkgs),
+  Version = c(r_version, vapply(pkgs, ver, character(1))),
+  row.names = NULL
+))
+```

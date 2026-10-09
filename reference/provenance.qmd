@@ -1,3 +1,89 @@
 # Provenance {#sec-provenance}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("../_setup.R")
+# The synthetic example writes its own input, so the table has a real file to hash.
+example_input <- file.path(tempdir(), "counts.tsv")
+sc <- synth_counts(n_per_group = 4)
+write.table(sc$counts, example_input, sep = "\t", quote = FALSE)
+inputs <- data.frame(
+  input = c("counts.tsv", "annotation.tsv"),
+  path = c(example_input, file.path(tempdir(), "annotation.tsv")),
+  required = c(TRUE, FALSE)
+)
+inputs$present <- file.exists(inputs$path)
+inputs$sha256 <- NA_character_
+inputs$sha256[inputs$present] <- vapply(inputs$path[inputs$present], sha256_file, character(1))
+manifest_path <- file.path(report_root(), "run-manifest.json")
+```
+
+This page records what the book was built from: the inputs, the run that produced them, and the software that loaded.
+
+## Inputs {#sec-provenance-inputs}
+
+```{r}
+#| label: tbl-provenance-inputs
+#| tbl-cap: "Inputs, whether each is required and present, and the first 16 hex characters of its SHA-256."
+shown <- inputs[, c("input", "required", "present", "sha256")]
+shown$sha256[is.na(shown$sha256) & shown$present] <- "checksum tool unavailable"
+shown$sha256[!shown$present] <- "not applicable"
+knitr::kable(shown, col.names = c("Input", "Required", "Present", "SHA-256 (first 16)"))
+```
+
+```{r}
+#| echo: false
+#| output: asis
+for (i in which(!inputs$required & !inputs$present)) {
+  cat("Optional input `", inputs$input[i], "` is absent. Sections that use it render a ",
+      "not-applicable note. This run is degraded, not complete.\n\n", sep = "")
+}
+if (any(inputs$present & is.na(inputs$sha256))) {
+  cat("A checksum could not be computed. A check that could not run counts as a failure, not a pass.\n\n")
+}
+```
+
+<!-- Q
+- Are the checksums those of the files the analysis actually read?
+-->
+
+## Run manifest {#sec-provenance-manifest}
+
+```{r}
+#| echo: false
+#| output: asis
+if (!file.exists(manifest_path)) {
+  cat(
+    "::: {.callout-caution}\n## No run manifest\n",
+    "No run manifest was found next to the book. When the analysis ran, whether it ran ",
+    "cleanly, and which steps failed are all unknown. Treat every result as unchecked.\n:::\n"
+  )
+} else {
+  m <- jsonlite::fromJSON(manifest_path)
+  failed <- if (length(m$failed_steps)) paste(m$failed_steps, collapse = ", ") else "none"
+  cat("The run manifest was written ", m$written, ". Clean run: ", m$clean,
+      ". Failed steps: ", failed, ".\n", sep = "")
+}
+```
+
+## Environment {#sec-provenance-environment}
+
+::: {.callout-note}
+## Why the resolved environment
+This table lists what loaded when the book rendered. A lockfile says what should load. When the two disagree, the loaded versions are the ones that produced these numbers.
+:::
+
+```{r}
+#| label: tbl-provenance-environment
+#| tbl-cap: "Attached packages and their loaded versions, from the session that rendered this page."
+si <- sessionInfo()
+pk <- si$otherPkgs
+knitr::kable(data.frame(
+  Package = c("R", names(pk)),
+  Version = c(paste(R.version$major, R.version$minor, sep = "."),
+              vapply(pk, function(p) p$Version, character(1))),
+  row.names = NULL
+))
+```
+
+The platform was `r si$platform`.

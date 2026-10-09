@@ -1,3 +1,78 @@
 # About this book {.unnumbered}
 
-Placeholder. A later build step replaces this page.
+```{r}
+#| include: false
+source("_setup.R")
+```
+
+This book reports one analysis. Replace this paragraph with one sentence on what the analysis decides, for whom, and on what data.
+
+<!-- Q
+- What decision does this book support?
+- Who will read it, and what do they already know?
+-->
+
+## What is in it, and in what order {.unnumbered}
+
+The order of the parts is an argument.
+
+1. **The data and the instrument.** What was measured, and how well.
+2. **What this design could detect.** The detection floor.
+3. **Results.**
+4. **Robustness.** Whether the results survive small changes to the analysis.
+5. **Synthesis.** The only chapter that interprets.
+6. **Reference.** Methods, provenance, limitations, and glossary.
+
+The detection floor comes before any result. A result read without its detection floor is a result read without its denominator.
+
+## The register rule {#sec-register .unnumbered}
+
+Every chapter before the synthesis is descriptive and quantitative. It says what was measured, and how large it was.
+
+::: {.content-hidden when-profile="gallery"}
+Interpretation lives only in @sec-interpretation, under a banner that says it is a reading, not a result.
+:::
+
+::: {.content-visible when-profile="gallery"}
+Interpretation lives only in the synthesis chapter, under a banner that says it is a reading, not a result. In this gallery, that chapter is @sec-g-interpretation.
+:::
+
+The rule is enforced by `tools/style/register_guard.py`. Run every check with `bash scripts/check_style.sh`.
+
+## The questions each section must answer {.unnumbered}
+
+Each section carries the questions its prose must answer, as an HTML comment that starts with `<!-- Q`. The comments are hidden in a normal render. Render with `quarto render --profile draft` to show each block as a collapsed callout.
+
+## This run {.unnumbered}
+
+```{r}
+#| label: tbl-index-run
+#| tbl-cap: "Analysis parameters for this run, read from _params.yml at render time."
+params_shown <- c("fdr", "lfc_threshold", "min_count")
+knitr::kable(data.frame(
+  Parameter = params_shown,
+  Value = vapply(params_shown, function(p) format(report_param(p)), character(1)),
+  row.names = NULL
+))
+```
+
+This book was rendered on `r format(Sys.Date(), "%Y-%m-%d")` with R `r paste(R.version$major, R.version$minor, sep = ".")`.
+
+<!-- Q
+- Is every parameter in this table decided, with its reason recorded in Methods?
+-->
+
+## Colour and accessibility {.unnumbered}
+
+- One palette serves the whole book. It is safe for the common forms of colour-vision deficiency.
+- Categories use the Okabe-Ito colours [@okabeito].
+- Significance is encoded by shape as well as colour. No reader depends on colour alone.
+- A heatmap of row z-scores shows each feature relative to its own mean. A z-score is not absolute expression.
+
+## Reproducing it {.unnumbered}
+
+```bash
+quarto render                   # this book
+quarto render --profile draft   # this book, with the draft questions shown
+bash scripts/check_style.sh     # every style check and test
+```

@@ -1,3 +1,25 @@
 # Glossary {#sec-glossary}
 
-Placeholder. A later build step replaces this page.
+**CPM**. Counts per million: a feature's count divided by the sample's total count, times one million. It corrects for depth. It does not correct for composition.
+
+**FDR**. False discovery rate: the expected share of false positives among the features called. It is not the chance that any one called feature is false.
+
+**Log2 fold change**. The base-2 logarithm of the ratio of two group means. A value of 1 is a doubling. It is not a measure of how certain the change is.
+
+**Minimum detectable effect**. The smallest effect a design could detect at a stated power and threshold. It is not the smallest effect that exists.
+
+**Equivalence test (TOST)**. Two one-sided tests that show a difference lies inside a stated bound. It is the test that supports a claim of no meaningful change. A non-significant ordinary test is not one.
+
+**Permutation calibration**. Re-running an analysis with the group labels shuffled, to see how many features pass by chance. It checks the false discovery rate. It is not a test of any one feature.
+
+**Jackknife**. Re-running an analysis with one sample left out at a time. It shows how much a result depends on single samples. It is not a resampling estimate of power.
+
+**Row z-score**. A feature's values centred on its own mean and scaled by its own standard deviation. It shows relative change across samples. It is not absolute expression.
+
+**Winner's curse**. The tendency of the largest observed effects to overstate their true size, because they were selected for being large. It is not evidence of an error in the analysis.
+
+**Detection floor**. The smallest change this design could see, given its samples and noise. It is not a property of the biology.
+
+<!-- Q
+- Does every term used without explanation in the book appear here?
+-->
