@@ -58,8 +58,8 @@ Python chapters need `QUARTO_PYTHON` set to a Python with the packages in `requi
 5. The gallery uses synthetic data only. Never add a data file to the gallery.
 6. Never edit `tools/style/` or `style-checks.toml` to make content pass. Fix the content. If a flagged sentence is correct where it stands, add a `register-ok` comment with a reason, and say so in your report.
 7. Never commit `_book/`, `_freeze/`, `figures/`, or any other rendered output.
-8. Never change a value in `_params.yml` without recording the decision and its reason in `reference/methods.qmd`.
-9. Do not delete a draft question. Answer it in prose, or mark it deferred with a reason inside the block.
+8. Never change a value in `_params.yml` without recording the decision and its reason in `reference/methods.qmd`. When a chapter changes a method or a step, update the methods paragraph in the same task.
+9. Do not delete a draft question you were given. Answer it in prose and mark it ANSWERED, or mark it DEFERRED with a reason (see "Marking draft questions"). A placeholder question written by `new_book.py` may be replaced by the section's real questions when you write that section.
 10. Run `bash scripts/check_style.sh` before you claim a task is done, and paste its table.
 
 ## Definition of done
@@ -76,14 +76,23 @@ A task is done when all of these hold:
 1. Copy the anatomy from `STYLE-GUIDE.md` section 4, or let `scripts/new_book.py --chapters` create the file.
 2. Add the chapter to `_quarto-starter.yml`, between the chapter markers, in the order of the argument: data and instrument, detection floor, results, robustness.
 3. Give every section a label of the form `sec-<chapter>-<topic>`.
-4. Add each "cannot show" statement to `reference/limitations.qmd`, under its group, with a link back to the section.
+4. Add each "cannot show" statement to `reference/limitations.qmd`, under its group, with a link back to the section. When no group fits, for example a limit of the statistical method, add a group heading such as "From the method".
+5. If the book has no detection-floor chapter, a "count of zero" warning cannot cite a floor. Say so in the warning, and add "Detection floor" to the "Not yet implemented" table in `reference/limitations.qmd`. Do not write the words "detection floor" only to satisfy the absence guard.
 
-## Deferring a draft question
+## After `new_book.py`
 
-Write the reason inside the question block, on the question's own line:
+- It prints a "check link" line for every cross-reference it repointed in `chapters/90-interpretation.qmd` and `reference/limitations.qmd`. Those links resolve, but they point at the first new chapter. Fix each one when you write the chapter it belongs to.
+- It writes a flat chapter list. Add part headings in `_quarto-starter.yml` if the book needs them.
+- It warns when no chapter covers the detection floor.
+- `index.qmd` and the interpretation chapter stay as placeholders until the chapters they summarise exist.
+
+## Marking draft questions
+
+Mark each question inside its block, on the question's own line. ANSWERED names the section that answers it. DEFERRED gives the reason.
 
 ```markdown
 <!-- Q
+- How many features passed in each direction? ANSWERED: @sec-results-counts
 - How many samples failed quality control? DEFERRED: the quality report is not yet available.
 -->
 ```

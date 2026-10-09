@@ -23,7 +23,9 @@ Rules:
 - Compute every number in prose with inline code. Never type a number.
 - Descriptive register only. Do not interpret. Interpretation belongs in chapters/90-interpretation.qmd.
 - Every figure has a label, a caption of at least 8 words ending in a full stop, and alt text.
-- Answer every draft question in the prose, or mark it DEFERRED with a reason inside the block.
+- Answer every draft question in the prose and mark it ANSWERED with the section label, or mark it DEFERRED with a reason (AGENTS.md, "Marking draft questions"). You may replace the scaffold's placeholder question.
+- Fix any "check link" reference that new_book.py repointed and that belongs to this chapter.
+- If the chapter changes a method or a step, update reference/methods.qmd.
 - Add every "cannot show" statement to reference/limitations.qmd, under its group, with a link back to its section.
 - Do not edit tools/style/ or style-checks.toml.
 

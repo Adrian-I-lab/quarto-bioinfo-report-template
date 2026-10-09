@@ -187,7 +187,7 @@ Each section carries the questions its prose must answer, in an HTML comment:
 -->
 ```
 
-The comment is invisible in a normal render. `quarto render --profile draft` shows each block as a collapsed callout. Before a chapter is done, each question is answered in prose or marked as deferred with a reason.
+The comment is invisible in a normal render. `quarto render --profile draft` shows each block as a collapsed callout. Before a chapter is done, each question is answered in prose and marked `ANSWERED: @sec-...`, or marked `DEFERRED:` with a reason.
 
 ## 17. The interpretation chapter
 
