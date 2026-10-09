@@ -196,8 +196,8 @@ synth_counts <- function(n_genes = 500, n_per_group = 3, seed = 1) {
 
 # A synthetic results table. Illustrative only: a two-sample Welch t-test
 # on log CPM, which is NOT a recommended method for count data.
-synth_de <- function(seed = 1) {
-  sc <- synth_counts(seed = seed)
+synth_de <- function(seed = 1, n_per_group = 3) {
+  sc <- synth_counts(n_per_group = n_per_group, seed = seed)
   lib <- colSums(sc$counts)
   logcpm <- log2(t(t(sc$counts + 1) / (lib + 1) * 1e6))
   treated <- sc$samples$group == "treated"

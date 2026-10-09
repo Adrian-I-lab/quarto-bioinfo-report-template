@@ -294,13 +294,13 @@ def _bh(p: np.ndarray) -> np.ndarray:
     return out
 
 
-def synth_de(seed: int = SEED) -> pd.DataFrame:
+def synth_de(seed: int = SEED, n_per_group: int = 3) -> pd.DataFrame:
     """A synthetic results table.
 
     Illustrative only: a two-sample Welch t-test on log CPM, which is NOT a
     recommended method for count data.
     """
-    sc = synth_counts(seed=seed)
+    sc = synth_counts(n_per_group=n_per_group, seed=seed)
     counts = sc["counts"].to_numpy(dtype=float)
     lib = counts.sum(axis=0)
     logcpm = np.log2((counts + 1) / (lib + 1) * 1e6)

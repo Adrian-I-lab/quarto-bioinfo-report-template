@@ -8,5 +8,7 @@ fdr: 0.05
 lfc_threshold: 1.0
 # Minimum count for a feature to be kept. Decision recorded in reference/methods.qmd.
 min_count: 10
+# Target power for the detection floor. Decision recorded in reference/methods.qmd.
+power: 0.8
 # Deliberately undecided. The gallery uses it to show the stop message.
 decided_later: null
