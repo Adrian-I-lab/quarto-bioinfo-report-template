@@ -101,11 +101,19 @@ fi
 
 # Content to check.
 if [ "$changed" = "1" ]; then
-  # A read loop, not mapfile, so this runs on the bash 3.2 that ships with macOS.
+  # Fail closed: without a main branch there is nothing to compare with.
+  if ! git rev-parse --verify -q main >/dev/null 2>&1; then
+    echo "check_style: --changed needs a git branch named main to compare with. Run without --changed." >&2
+    exit 2
+  fi
+  # Changed tracked files plus new untracked ones. A read loop, not
+  # mapfile, so this runs on the bash 3.2 that ships with macOS.
   content=()
   while IFS= read -r f; do
     [ -n "$f" ] && content+=("$f")
-  done < <(git diff --name-only --diff-filter=ACMR main -- '*.qmd' '*.md' | grep -v '^tests/fixtures/' || true)
+  done < <({ git -c core.quotepath=off diff --name-only --diff-filter=ACMR main -- '*.qmd' '*.md'
+             git -c core.quotepath=off ls-files --others --exclude-standard -- '*.qmd' '*.md'; } \
+           | grep -v '^tests/fixtures/' | sort -u || true)
   if [ "${#content[@]}" -eq 0 ]; then
     echo "No .qmd or .md files changed against main. Content checks skipped."
     for name in register prose absence synthesis captions; do
