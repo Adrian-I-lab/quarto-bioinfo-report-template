@@ -11,8 +11,9 @@ n_per_group <- sum(treated)
 pooled_sd <- sqrt((apply(logcpm[, treated], 1, var) + apply(logcpm[, !treated], 1, var)) / 2)
 alpha <- report_param("fdr")
 power <- report_param("power")
-mde <- (qnorm(1 - alpha / 2) + qnorm(power)) * pooled_sd * sqrt(2 / n_per_group)
-floor_df <- data.frame(mean_logcpm = rowMeans(logcpm), mde = mde)
+kept <- rowMeans(sc$counts) >= report_param("min_count")
+mde <- ((qnorm(1 - alpha / 2) + qnorm(power)) * pooled_sd * sqrt(2 / n_per_group))[kept]
+floor_df <- data.frame(mean_logcpm = rowMeans(logcpm)[kept], mde = mde)
 ```
 
 ::: {.callout-tip}
@@ -27,7 +28,7 @@ Last run on the synthetic example data, `r format(Sys.Date(), "%Y-%m-%d")`. Repl
 
 **Question.** What is the smallest log2 fold change this design could detect, for a typical feature?
 
-**Design.** `r n_per_group` samples per group. The minimum detectable effect is computed per feature from its pooled within-group standard deviation of log CPM. Nothing is tested.
+**Design.** `r n_per_group` samples per group. The minimum detectable effect is computed for each of the `r fmt(sum(kept))` features kept by the count filter, the same features that Results tests, from its pooled within-group standard deviation of log CPM. Nothing is tested.
 
 The minimum detectable effect uses a two-sided normal approximation at alpha `r alpha` and power `r power`. It ignores the multiple-testing correction, so it is a lower bound on the true floor.
 
@@ -42,8 +43,8 @@ Each point is one feature. A point high on the y-axis is a feature whose change 
 
 ```{r}
 #| label: fig-detection-floor-mde
-#| fig-cap: "Minimum detectable absolute log2 fold change per feature against mean log CPM, for all 500 synthetic features. The dashed line marks the median floor."
-#| fig-alt: "A scatter plot of 500 points. The floor is highest for features with low mean log CPM and falls as the mean rises."
+#| fig-cap: "Minimum detectable absolute log2 fold change per feature against mean log CPM, for every synthetic feature kept by the count filter. The dashed line marks the median floor."
+#| fig-alt: "A scatter plot with one point per kept feature. The floor is highest for features with low mean log CPM and falls as the mean rises."
 ggplot(floor_df, aes(mean_logcpm, mde)) +
   geom_point(alpha = 0.5, colour = HOUSE_PAL[["down"]]) +
   geom_hline(yintercept = median(floor_df$mde), linetype = "dashed") +

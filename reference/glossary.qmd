@@ -4,7 +4,7 @@
 
 **FDR**. False discovery rate: the expected share of false positives among the features called. It is not the chance that any one called feature is false.
 
-**Log2 fold change**. The base-2 logarithm of the ratio of two group means. A value of 1 is a doubling. It is not a measure of how certain the change is.
+**Log2 fold change**. The difference between two group means of log2 CPM. It is the base-2 logarithm of the ratio of the two groups' geometric mean CPM, with a pseudo-count of 1. A value of 1 is a doubling. It is not a measure of how certain the change is.
 
 **Minimum detectable effect**. The smallest effect a design could detect at a stated power and threshold. It is not the smallest effect that exists.
 

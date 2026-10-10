@@ -7,7 +7,7 @@ Layout tools keep a long chapter readable. Each example shows the rendered eleme
 ::: {.panel-tabset}
 ### Control
 
-The control group has four samples. Its median depth sits close to the overall median.
+The control group has four samples. Its depth and filter results would go here.
 
 #### A nested heading
 
@@ -15,7 +15,7 @@ Headings inside a tab stay inside that tab.
 
 ### Treated
 
-The treated group has four samples. Its median depth sits close to the overall median.
+The treated group has four samples. Its depth and filter results would go here.
 :::
 
 ````markdown
@@ -97,7 +97,7 @@ Use it for a long list that supports a section but is not part of its argument.
 ::: {.column-page}
 | Sample | Group | Depth | Features kept | Features passing | Notes |
 |---|---|---|---|---|---|
-| S1 | control | 98,120 | 441 | not applicable | Wide tables and wide figures use the page column. |
+| S1 | control | not computed here | not computed here | not applicable | An illustrative layout row with no data. Wide tables and wide figures use the page column. |
 :::
 
 ````markdown

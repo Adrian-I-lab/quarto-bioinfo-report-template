@@ -5,11 +5,11 @@ Every "this cannot show" statement in the book, gathered in one place. Each link
 ## From the design {#sec-limitations-design}
 
 ::: {.content-hidden when-profile="gallery"}
-- With four samples per group, the synthetic example design cannot separate a treatment effect from a difference between individual samples (@sec-design-samples).
+- With four samples per group, the synthetic example estimates each feature's variance imprecisely, so only large changes can be detected (@sec-design-samples, @sec-detection-floor-mde).
 :::
 
 ::: {.content-visible when-profile="gallery"}
-- The gallery's synthetic design has four samples per group. It cannot separate a group effect from a sample effect (@sec-g-anatomy).
+- The gallery's synthetic design has four samples per group. Its variance estimates are imprecise, so only large changes can be detected (@sec-g-anatomy).
 :::
 
 ## From the detection floor {#sec-limitations-floor}

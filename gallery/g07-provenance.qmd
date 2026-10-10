@@ -55,7 +55,7 @@ if (!file.exists(file.path(dir, "missing-manifest.json"))) {
 }
 ```
 
-The same code renders both states. The manifest file decides which one a reader sees.
+Here the two states are shown by two separate chunks. In a real book, one chunk checks for the manifest and renders whichever state applies, as `reference/provenance.qmd` does.
 
 ## The resolved environment {#sec-g-provenance-environment}
 

@@ -23,10 +23,10 @@ See @sec-quality-depth and @tbl-results-counts.
 
 ## Equations {#sec-g-crossrefs-equations}
 
-The log2 fold change compares the mean of the treated group, $\bar{x}_T$, with the mean of the control group, $\bar{x}_C$:
+The log2 fold change compares the mean log2 CPM of the treated group, $\bar{x}_T$, with that of the control group, $\bar{x}_C$. Each value is $\log_2(\mathrm{CPM} + 1)$, so the difference of means is the log of a ratio of geometric means:
 
 $$
-\mathrm{LFC} = \log_2 \frac{\bar{x}_T}{\bar{x}_C}
+\mathrm{LFC} = \bar{x}_T - \bar{x}_C
 $$ {#eq-lfc}
 
 The Benjamini-Hochberg adjusted p-value for the feature ranked $i$ of $m$, with p-values sorted in ascending order, is:

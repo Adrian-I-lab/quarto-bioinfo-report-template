@@ -16,7 +16,7 @@ def book_root():
     for folder in (here, *here.parents):
         if (folder / "_quarto.yml").exists():
             return folder
-    raise RuntimeError("No _quarto.yml found. Set REPORT_ROOT to the book folder.")
+    raise RuntimeError("No _quarto.yml found above the working folder. Render from inside the book.")
 
 
 sys.path.insert(0, str(book_root()))
@@ -35,7 +35,7 @@ up = (de["FDR"] < fdr) & (de["log2FC"] >= lfc)
 down = (de["FDR"] < fdr) & (de["log2FC"] <= -lfc)
 ```
 
-This chapter shows the house conventions in Python, with the Jupyter engine. It mirrors the R chapters: the same anatomy, the same palette, and numbers computed, never typed. A book may mix engines across chapters. Each chapter uses one engine, set in its front matter with `jupyter: python3`.
+This chapter shows the house conventions in Python, with the Jupyter engine. It follows the same conventions as the R chapters: the same palette, captions with alt text, and numbers computed, never typed. A book may mix engines across chapters. Each chapter uses one engine, set in its front matter with `jupyter: python3`.
 
 The first cell is hidden. It finds the book root by walking up from the chapter's folder, then imports `_setup.py`, which offers the same helpers as `_setup.R`.
 
@@ -66,7 +66,7 @@ plt.show()
 
 ```{python}
 #| label: tbl-g-python-counts
-#| tbl-cap: "Features passing both thresholds, by direction, out of the features tested, computed with pandas."
+#| tbl-cap: "Features tested, by call: rose or fell past both thresholds, or did not pass, out of the features tested, computed with pandas."
 n = len(de)
 rows = [("Rose", int(up.sum())), ("Fell", int(down.sum())), ("Did not pass", n - int(up.sum()) - int(down.sum()))]
 table = "| Direction | Features |\n|---|---|\n" + "\n".join(

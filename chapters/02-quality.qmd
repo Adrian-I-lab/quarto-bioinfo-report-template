@@ -33,7 +33,7 @@ Example output on synthetic data. Replace with your analysis.
 ```{r}
 #| label: fig-quality-depth
 #| fig-cap: "Total counts per sample for the synthetic example, one bar per sample, filled by group. The dashed line marks the median depth across all samples."
-#| fig-alt: "A bar chart of total counts for six samples. Bars for the control and treated groups have similar heights around the dashed median line."
+#| fig-alt: "A bar chart of total counts, one bar per sample, filled by group, with a dashed horizontal line at the median depth. Bar heights vary around the line."
 ggplot(depth, aes(sample, reads, fill = group)) +
   geom_col() +
   geom_hline(yintercept = median(depth$reads), linetype = "dashed") +
@@ -51,7 +51,7 @@ The lowest depth was `r fmt(min(depth$reads))` and the highest was `r fmt(max(de
 
 ## Features kept {#sec-quality-filter}
 
-Of `r fmt(length(kept))` features, `r frac(sum(kept), length(kept))` passed the mean-count filter of `r min_count`.
+In all, `r frac(sum(kept), length(kept))` features passed the mean-count filter of `r min_count`.
 
 <!-- Q
 - How many features were removed by the filter, and from which part of the count range?

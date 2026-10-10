@@ -30,9 +30,9 @@ This chapter has no code engine, so its numbers are typed here. In a real book, 
    *Evidence:* the recovery table in @sec-g-tables-truth.
    *Why it could be wrong:* recovery depends on the thresholds. A lower fold-change threshold would recover more, at the cost of more false positives. The reading is about this design at these thresholds, not about the data.
 
-3. **Depth does not drive the calls.** Depth varied little between samples, and the calls do not line up with the deepest samples.
+3. **Depth is a possible confounder that this design cannot rule out.** Every treated sample is deeper than every control sample, so group and depth vary together.
    *Evidence:* the depth figure in @sec-g-anatomy-depth.
-   *Why it could be wrong:* the check is visual. A formal test of depth against each call was not run.
+   *Why it could be wrong:* the test runs on CPM, which scales out total depth, so the difference may not affect the calls. No test of depth against the calls was run.
 
 ## What the data does not show {#sec-g-interpretation-not-shown}
 

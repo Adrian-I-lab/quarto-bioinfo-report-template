@@ -1,6 +1,6 @@
 # Quarto report template for bioinformatics
 
-> **Status: rough prototype (v0.1).** It renders and its checks pass on the two machines listed under Requirements, but it has had no outside users, its CI has not yet run, and several design choices are still open. Read [Limits](#limits) before relying on it.
+> **Status: rough prototype (v0.1).** It renders and its checks pass on the two machines listed under Requirements. It has had no outside users, its CI has not yet run, and several design choices are still open. Read [Limits](#limits) before relying on it.
 
 A Quarto book template for analysis reports in bioinformatics. Its house style keeps measurement and interpretation apart: every chapter before the synthesis describes and counts, and one labelled chapter interprets. The template ships a format layer, a starter book, a rendered gallery of every element on synthetic data, a style guide, automated style checks with tests, and instructions for AI agents.
 

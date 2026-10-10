@@ -64,7 +64,7 @@ Depth ranged from `r fmt(min(depth$reads))` to `r fmt(max(depth$reads))` counts 
 
 ```{r}
 #| label: tbl-g-anatomy-results
-#| tbl-cap: "Features passing both thresholds, by direction, out of the features tested."
+#| tbl-cap: "Features tested, by call: rose or fell past both thresholds, or did not pass, out of the features tested."
 tab <- table(de$call)
 knitr::kable(data.frame(
   Direction = c("Rose", "Fell", "Did not pass"),

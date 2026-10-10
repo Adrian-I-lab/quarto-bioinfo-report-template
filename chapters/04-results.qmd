@@ -71,7 +71,7 @@ This figure cannot be used as evidence that features below the thresholds are un
 
 ```{r}
 #| label: tbl-results-counts
-#| tbl-cap: "Features passing both thresholds, by direction, with the number tested as the denominator."
+#| tbl-cap: "Features tested, by call: rose or fell past both thresholds, or did not pass. The number tested is the denominator."
 counts <- table(de$call)
 knitr::kable(data.frame(
   Direction = c("Rose", "Fell", "Did not pass"),

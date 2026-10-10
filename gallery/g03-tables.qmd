@@ -76,7 +76,7 @@ The control row reads "not applicable", not 0. A 0 would claim that a comparison
 
 ```{r}
 #| label: tbl-g-tables-split
-#| tbl-cap: "Features passing both thresholds, split by direction and by expression tier (thirds of mean log CPM)."
+#| tbl-cap: "Features tested, split by call (rose, fell, or did not pass both thresholds) and by expression tier (thirds of mean log CPM)."
 tier <- cut(rowMeans(logcpm), quantile(rowMeans(logcpm), c(0, 1/3, 2/3, 1)),
             labels = c("low", "middle", "high"), include.lowest = TRUE)
 split_tab <- table(factor(tier, levels = c("low", "middle", "high")),
