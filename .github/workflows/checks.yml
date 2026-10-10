@@ -15,8 +15,8 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12"]
     steps:
-      - uses: actions/checkout@PIN_ME # v4
-      - uses: actions/setup-python@PIN_ME # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
       # No installs. The checks use the standard library only. Tests that need
@@ -25,15 +25,15 @@ jobs:
         run: bash scripts/check_style.sh
 
   # A render job is not enabled in v0.1. It would install Quarto and R in CI.
-  # Enabling it is the maintainer's decision. Pin both actions by SHA first.
+  # Enabling it is the maintainer's decision. The actions are pinned by SHA.
   #
   # render:
   #   runs-on: ubuntu-24.04
   #   steps:
-  #     - uses: actions/checkout@PIN_ME # v4
-  #     - uses: quarto-dev/quarto-actions/setup@PIN_ME # v2
+  #     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  #     - uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2.2.0
   #       with:
   #         version: 1.9.37
-  #     - uses: r-lib/actions/setup-r@PIN_ME # v2
-  #     - run: Rscript -e 'install.packages(c("knitr", "rmarkdown", "ggplot2", "yaml", "jsonlite"))'
+  #     - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+  #     - run: Rscript -e 'install.packages(c("knitr", "rmarkdown", "ggplot2", "yaml", "jsonlite", "downlit", "xml2"))'
   #     - run: quarto render --profile gallery
