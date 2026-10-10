@@ -11,7 +11,8 @@ check_denylist_env || exit 1
 status=0
 
 # Staged file paths.
-paths="$(git diff --cached --name-only --diff-filter=ACMR)"
+# quotepath=off keeps non-ASCII names unescaped, so each one can be diffed.
+paths="$(git -c core.quotepath=off diff --cached --name-only --diff-filter=ACMR)"
 if ! printf '%s\n' "$paths" | scan_text "staged file paths"; then
   status=1
 fi
@@ -19,8 +20,10 @@ fi
 # Added lines, per file, so a hit names the file.
 while IFS= read -r f; do
   [ -z "$f" ] && continue
-  if ! git diff --cached -U0 --no-color -- "$f" \
-      | grep '^+' | grep -v '^+++' | sed 's/^+//' \
+  # Added lines are taken only after the first hunk header, so an added
+  # line that itself starts with "++" is not mistaken for the file header.
+  if ! git -c core.quotepath=off diff --cached -U0 --no-color -- "$f" \
+      | awk '/^@@/ {h = 1; next} h && /^\+/ {print substr($0, 2)}' \
       | scan_text "$f"; then
     status=1
   fi

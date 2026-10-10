@@ -8,8 +8,10 @@ hook_dir="$(cd "$(dirname "$0")" && pwd)"
 
 check_denylist_env || exit 1
 
-# Ignore git's own comment lines.
-if ! grep -v '^#' "$1" | scan_text "commit message"; then
+# Scan every line. Lines starting with "#" are kept in the stored message
+# when the commit uses -m, so they are scanned too. Only a verbose-commit
+# diff below git's scissors line is left out.
+if ! sed '/^# -\{24\} >8 -\{24\}$/,$d' "$1" | scan_text "commit message"; then
   echo "hook: commit message rejected. Reword it." >&2
   exit 1
 fi
