@@ -1,5 +1,7 @@
 # Quarto report template for bioinformatics
 
+> **Status: rough prototype (v0.1).** It renders and its checks pass on the two machines listed under Requirements, but it has had no outside users, its CI has not yet run, and several design choices are still open. Read [Limits](#limits) before relying on it.
+
 A Quarto book template for analysis reports in bioinformatics. Its house style keeps measurement and interpretation apart: every chapter before the synthesis describes and counts, and one labelled chapter interprets. The template ships a format layer, a starter book, a rendered gallery of every element on synthetic data, a style guide, automated style checks with tests, and instructions for AI agents.
 
 ## What you get
@@ -38,13 +40,27 @@ A Quarto book template for analysis reports in bioinformatics. Its house style k
 
 ## Requirements
 
-Tested with these exact versions:
+You need:
 
-- Quarto 1.9.37 (with its bundled Pandoc 3.8.3).
-- R 4.3.3 with knitr 1.45, rmarkdown 2.25, ggplot2 3.4.4, yaml 2.3.8, and jsonlite 1.8.8. The starter book, the reference pages, and most gallery chapters use R.
+- Quarto (tested with 1.9.37 and its bundled Pandoc 3.8.3).
+- R with knitr, rmarkdown, ggplot2, yaml, and jsonlite. The starter chapters, `index.qmd`, two reference pages, and four of the ten gallery chapters run R code, so a Python-only user still needs R to render them. See [Limits](#limits).
 - Python 3.11 or later for the style checks and the scaffold. They use the standard library only.
-- For the Python gallery chapter: the packages pinned in `requirements-gallery.txt`, tested on Python 3.13.16. Point Quarto at that Python with `QUARTO_PYTHON`.
-- Optional: the R packages downlit and xml2. Without them, code linking is off and each R page prints a warning.
+- For the Python gallery chapter: the packages pinned in `requirements-gallery.txt`. Point Quarto at that Python with `QUARTO_PYTHON`.
+- Recommended: the R packages downlit and xml2. The book turns on code linking, and without these two packages each R page prints a warning.
+- bash, for `scripts/check_style.sh`. The stock macOS bash 3.2 works.
+
+It has been rendered and checked on two machines:
+
+| | Linux (Ubuntu 24.04, cloud build, as reported by that build) | macOS (measured 2026-10-10) |
+|---|---|---|
+| Quarto | 1.9.37 | 1.9.37 |
+| R | R 4.3.3 | R 4.5.1 |
+| knitr, rmarkdown, ggplot2 | 1.45, 2.25, 3.4.4 | 1.50, 2.30, 4.0.0 |
+| yaml, jsonlite | 2.3.8, 1.8.8 | 2.3.10, 2.0.0 |
+| downlit, xml2 | not installed | 0.4.4, 1.4.1 |
+| Python (checks) | 3.13.16 | 3.13.5, and 3.11.4 for the tests |
+| Python (gallery chapter) | the pins in `requirements-gallery.txt` | the same pins, except matplotlib 3.10.0 and nbclient 0.10.2 |
+| Render warnings | 7 or 8 per profile, all from missing downlit and xml2 | 0 in each of the four profiles |
 
 ## Render
 
@@ -122,9 +138,16 @@ Render it with `quarto render --profile gallery`.
 
 ## Limits
 
+This is a prototype. Known limits:
+
+- **Python-only users still need R.** The five starter chapters, `index.qmd`, the methods and provenance pages, and four of the ten gallery chapters run R code. `new_book.py --engine python` changes only the new chapters it writes.
+- **CI has not run yet.** The workflow is pinned to commit SHAs, but no run has completed. Python 3.11 was tested locally. Python 3.12 has only been checked by reading the code.
+- **Only Linux and macOS were tried.** Windows is untested, and the check runner needs bash.
+- **Citations are unchecked.** The DOIs and URLs in `references.bib` were written offline and have not been verified.
+- **The scaffold is coarse.** `new_book.py --chapters` writes a flat chapter list, and points cross-references to removed sections at the first chapter, with a "check link" note for each. Fix those links by hand.
 - The checks read prose, not methods. They cannot tell a typed number from a computed one, a wrong caption from a right one, or a wrong statistic from a right one.
 - The register guard is a heuristic over English. Its false-positive rate on real report prose is unknown [UNVERIFIED].
-- R chapters need a local R installation. The CI job runs the tests and checks only, not a render.
+- The CI job runs the tests and checks only, not a render. It installs no R packages, so the R tests report SKIPPED-NO-R.
 - The synthetic example uses a Welch t-test on log CPM because it needs no extra packages. It is not a recommended method for count data.
 
 ## Licence
