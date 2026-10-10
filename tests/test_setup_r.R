@@ -26,7 +26,10 @@ check("fmt", fmt(1234567) == "1,234,567")
 msg <- tryCatch(report_param("decided_later"), error = function(e) conditionMessage(e))
 check("null parameter stops with the documented message",
       grepl("not decided yet; record the decision in _params.yml", msg, fixed = TRUE))
-check("decided parameter is read", report_param("fdr") == 0.05)
+# Compared with the book's own _params.yml, so a user's decision does not break the test.
+fdr_line <- grep("^fdr:", readLines("_params.yml"), value = TRUE)
+check("decided parameter is read",
+      length(fdr_line) == 1 && report_param("fdr") == as.numeric(sub("^fdr:\\s*", "", fdr_line)))
 
 de <- synth_de()
 check("de table rows", nrow(de) == 500)

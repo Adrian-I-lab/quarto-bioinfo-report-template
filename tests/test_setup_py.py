@@ -43,7 +43,12 @@ class TestSetupPy(unittest.TestCase):
     def test_null_param_stops_with_message(self):
         with self.assertRaisesRegex(RuntimeError, "not decided yet; record the decision in _params.yml"):
             s.report_param("decided_later", root=ROOT)
-        self.assertEqual(s.report_param("fdr", root=ROOT), 0.05)
+        # Compare with the value in the book's own _params.yml, so the test
+        # still passes after the user records a different decision.
+        import re
+        m = re.search(r"^fdr:\s*([0-9.eE+-]+)\s*$", (ROOT / "_params.yml").read_text(), re.M)
+        self.assertIsNotNone(m, "_params.yml has no numeric fdr line")
+        self.assertEqual(s.report_param("fdr", root=ROOT), float(m.group(1)))
 
     def test_missing_param_stops(self):
         with self.assertRaisesRegex(RuntimeError, "not decided yet"):
