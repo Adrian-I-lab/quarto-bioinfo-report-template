@@ -101,7 +101,11 @@ fi
 
 # Content to check.
 if [ "$changed" = "1" ]; then
-  mapfile -t content < <(git diff --name-only --diff-filter=ACMR main -- '*.qmd' '*.md' | grep -v '^tests/fixtures/' || true)
+  # A read loop, not mapfile, so this runs on the bash 3.2 that ships with macOS.
+  content=()
+  while IFS= read -r f; do
+    [ -n "$f" ] && content+=("$f")
+  done < <(git diff --name-only --diff-filter=ACMR main -- '*.qmd' '*.md' | grep -v '^tests/fixtures/' || true)
   if [ "${#content[@]}" -eq 0 ]; then
     echo "No .qmd or .md files changed against main. Content checks skipped."
     for name in register prose absence synthesis captions; do
@@ -109,12 +113,12 @@ if [ "$changed" = "1" ]; then
     done
   fi
   qmd=()
-  for f in "${content[@]}"; do
+  for f in ${content[@]+"${content[@]}"}; do
     case "$f" in *.qmd) qmd+=("$f") ;; esac
   done
-  reg_paths=("${qmd[@]}")
-  prose_paths=("${content[@]}")
-  qmd_paths=("${qmd[@]}")
+  reg_paths=(${qmd[@]+"${qmd[@]}"})
+  prose_paths=(${content[@]+"${content[@]}"})
+  qmd_paths=(${qmd[@]+"${qmd[@]}"})
 else
   content=(.)
   reg_paths=(chapters gallery)
@@ -129,14 +133,14 @@ done
 
 if [ "${#content[@]}" -gt 0 ]; then
   if [ "${#reg_paths[@]}" -gt 0 ]; then
-    run_check register "$PY" "$TOOLS/register_guard.py" --strict "${reg_paths[@]}"
-    run_check absence "$PY" "$TOOLS/absence_guard.py" "${qmd_paths[@]}"
-    run_check captions "$PY" "$TOOLS/caption_check.py" "${qmd_paths[@]}"
+    run_check register "$PY" "$TOOLS/register_guard.py" --strict ${reg_paths[@]+"${reg_paths[@]}"}
+    run_check absence "$PY" "$TOOLS/absence_guard.py" ${qmd_paths[@]+"${qmd_paths[@]}"}
+    run_check captions "$PY" "$TOOLS/caption_check.py" ${qmd_paths[@]+"${qmd_paths[@]}"}
   else
     for name in register absence captions; do record "$name" "0" "0" "0" "skipped"; done
   fi
-  run_check prose "$PY" "$TOOLS/prose_lint.py" "${prose_paths[@]}"
-  run_check synthesis "$PY" "$TOOLS/synthesis_check.py" "${synth[@]}"
+  run_check prose "$PY" "$TOOLS/prose_lint.py" ${prose_paths[@]+"${prose_paths[@]}"}
+  run_check synthesis "$PY" "$TOOLS/synthesis_check.py" ${synth[@]+"${synth[@]}"}
 fi
 
 echo
