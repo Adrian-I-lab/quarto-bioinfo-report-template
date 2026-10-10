@@ -1,14 +1,15 @@
 # Analysis parameters. Every chapter reads these through report_param().
 # A null value means "not decided yet". The render stops rather than guesses.
 # Record each decision, with its date and reason, in reference/methods.qmd.
+# The values below are the template's examples, not recorded decisions.
 
-# False discovery rate threshold. Decision recorded in reference/methods.qmd.
+# False discovery rate threshold. Record the decision in reference/methods.qmd.
 fdr: 0.05
-# Minimum absolute log2 fold change. Decision recorded in reference/methods.qmd.
+# Minimum absolute log2 fold change. Record the decision in reference/methods.qmd.
 lfc_threshold: 1.0
-# Minimum count for a feature to be kept. Decision recorded in reference/methods.qmd.
+# Minimum count for a feature to be kept. Record the decision in reference/methods.qmd.
 min_count: 10
-# Target power for the detection floor. Decision recorded in reference/methods.qmd.
+# Target power for the detection floor. Record the decision in reference/methods.qmd.
 power: 0.8
 # Deliberately undecided. The gallery uses it to show the stop message.
 decided_later: null

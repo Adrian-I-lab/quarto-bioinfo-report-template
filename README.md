@@ -22,7 +22,15 @@ A Quarto book template for analysis reports in bioinformatics. Its house style k
 ## Start a new report
 
 1. On GitHub, click **Use this template**. It creates a new repository with these files and no history.
-2. Clone your new repository.
+2. Clone your new repository, and install what it needs (see [Requirements](#requirements)):
+
+   ```bash
+   Rscript -e 'install.packages(c("knitr", "rmarkdown", "ggplot2", "yaml", "jsonlite", "downlit", "xml2"))'
+   # Only for Python chapters, including the gallery's Python chapter:
+   python3 -m venv .venv && .venv/bin/pip install -r requirements-gallery.txt
+   export QUARTO_PYTHON="$PWD/.venv/bin/python"
+   ```
+
 3. Name the book, and optionally set its chapters and drop the gallery:
 
    ```bash
@@ -31,6 +39,8 @@ A Quarto book template for analysis reports in bioinformatics. Its house style k
    ```
 
    Add `--dry-run` first to see what it would change. It never overwrites edited chapters without `--force`.
+
+   It prints a "check link" line for each cross-reference it pointed at the first chapter, and a warning if no chapter covers the detection floor. Fix those by hand. With `--drop-gallery`, it removes the gallery files and the gallery block of this README, but other mentions of the gallery (in this README, `AGENTS.md`, `_quarto.yml`, and `requirements-gallery.txt`) stay until you edit them.
 
 4. Render it:
 
@@ -73,6 +83,8 @@ quarto render --profile gallery,draft  # the gallery, with draft questions shown
 
 The rendered book is written to `_book/`. It is never committed.
 
+Rendering uses `freeze: auto`, which re-runs a page only when that page's own source changes. After you edit `_params.yml`, `_setup.R`, or `_setup.py`, delete `_freeze/` before rendering, or the book keeps the old numbers.
+
 ## The house rules in brief
 
 - The book is an argument. The detection floor comes before any result.
@@ -106,6 +118,8 @@ When a flagged sentence is correct where it stands, add an opt-out comment with 
 ```
 
 An opt-out without a reason is itself a violation. Each check has tests that show it failing on a planted defect and passing on the fix.
+
+The optional git hooks in `scripts/hooks/` are for maintainers. They block commits that add a secret, a private IPv4 address, an absolute home path, or a term from a private word list. To use them, run `git config core.hooksPath scripts/hooks` and set `PORTFOLIO_DENYLIST` to a file of terms, one per line, with no blank lines. Without that variable they refuse every commit.
 
 ## Using it with an AI agent
 
