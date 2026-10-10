@@ -11,11 +11,16 @@ from __future__ import annotations
 import hashlib
 import math
 import os
+import sys
 from pathlib import Path
 
 import matplotlib
 
-matplotlib.use("Agg")
+# Inside a Jupyter kernel (a Quarto render), keep the kernel's inline
+# backend, or plt.show() draws nothing and the figure is left out of the
+# book. Elsewhere (tests and scripts), draw off screen.
+if "ipykernel" not in sys.modules and "MPLBACKEND" not in os.environ:
+    matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
