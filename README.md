@@ -161,6 +161,9 @@ This is a prototype. Known limits:
 - **The scaffold is coarse.** `new_book.py --chapters` writes a flat chapter list, and points cross-references to removed sections at the first chapter, with a "check link" note for each. Fix those links by hand.
 - The checks read prose, not methods. They cannot tell a typed number from a computed one, a wrong caption from a right one, or a wrong statistic from a right one.
 - The register guard is a heuristic over English. Its false-positive rate on real report prose is unknown [UNVERIFIED].
+- The register guard matches phrases as plain substrings, so a phrase can fire inside a longer word ("was expected" matches "as expected").
+- `new_book.py` does not stop a chapter name that collides with an existing page, such as Methods or Limitations. The duplicate label then fails the caption check.
+- The CI matrix has no numpy, so the Python setup tests are skipped there. They run where numpy, pandas, and matplotlib are installed.
 - The CI job runs the tests and checks only, not a render. It installs no R packages, so the R tests report SKIPPED-NO-R.
 - The synthetic example uses a Welch t-test on log CPM because it needs no extra packages. It is not a recommended method for count data.
 
