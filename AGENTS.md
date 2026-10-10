@@ -67,7 +67,7 @@ Python chapters need `QUARTO_PYTHON` set to a Python with the packages in `requi
 A task is done when all of these hold:
 
 - `bash scripts/check_style.sh` exits 0.
-- `quarto render` exits 0, with 0 unresolved cross-references. Count them with `grep -oh "?@[a-z0-9-]*" _book/*.html _book/*/*.html | sort -u | wc -l`.
+- `quarto render` exits 0, with 0 unresolved cross-references. Count them with `grep -oh 'quarto-unresolved-ref">[^<]*' _book/*.html _book/*/*.html | sort -u | wc -l`.
 - Every draft question in a section you touched is answered in prose, or marked deferred with a reason.
 - Your report states what you measured, not what you intended.
 
